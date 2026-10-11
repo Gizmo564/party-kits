@@ -23,6 +23,10 @@ export interface BotsAwayOptions {
   maxBots?: number;
   /** move the host role to a connected human when the host has been gone for the grace period (default true) */
   hostHandoff?: boolean;
+  /** extra thinking time a bot gets after the current state, e.g. to let a long animation finish (default 0) */
+  botExtraMs?: (state: any) => number;
+  /** return false to make the plugin sit out a game state (e.g. a real-time mode that another plugin runs); default always on */
+  enabled?: (state: any) => boolean;
 }
 
 /** The host-managed `bot` lobby message (add / remove). Shared with the real-time bots plugin. Returns an error string, null when handled, undefined when the message is not a bot message. */
@@ -45,6 +49,11 @@ export function lobbyBotMessage(room: BaseRoom, me: Member, msg: ClientMsg, logi
     return null;
   }
   return 'unknown bot operation';
+}
+
+/** True when the host is away and there is a connected human the role could move to (so a handoff wake-up is worth scheduling). */
+export function handoffPossible(room: BaseRoom): boolean {
+  return room.members.some((m) => !m.bot && !m.screen && m.conns.size > 0);
 }
 
 /** Flags players who have been gone past the grace period as `away`, and hands the host role to someone present. True if anything changed. Shared with the real-time bots plugin. */
@@ -72,6 +81,7 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
   const maxBots = opts.maxBots ?? MAX_BOTS_DEFAULT;
   const handoff = opts.hostHandoff ?? true;
   let plan: Plan = { seq: -1, nextAt: {} };
+  const on = (room: BaseRoom) => opts.enabled?.(room.game) ?? true;
 
   const isAwayHuman = (m: Member) => !m.bot && !m.screen && m.role === 'player' && m.conns.size === 0;
   /** is this seat played by the machine right now? */
@@ -82,7 +92,7 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
     if (plan.seq !== room.eventSeq) plan = { seq: room.eventSeq, nextAt: {} };
     for (const m of room.members) {
       if (!auto(m, now) || plan.nextAt[m.id] !== undefined) continue;
-      plan.nextAt[m.id] = m.bot ? now + think : Math.max(now + MIN_AWAY_DELAY_MS, m.lastSeen + grace);
+      plan.nextAt[m.id] = m.bot ? now + think + Math.max(0, opts.botExtraMs?.(room.game) ?? 0) : Math.max(now + MIN_AWAY_DELAY_MS, m.lastSeen + grace);
     }
   }
 
@@ -98,7 +108,7 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
 
     tick(room, now) {
       const changed = flagAwayAndHandoff(room, now, grace, handoff);
-      if (!room.started || room.over) return changed;
+      if (!room.started || room.over || !on(room)) return changed;
       ensure(room, now);
       for (const m of room.members) {
         if (!auto(m, now)) continue;
@@ -120,8 +130,8 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
         if (!m.bot && isAwayHuman(m) && !m.away) min(m.lastSeen + grace); // becomes away then
       }
       const h = room.host;
-      if (handoff && h && isAwayHuman(h)) min(h.lastSeen + grace);
-      if (room.started && !room.over) {
+      if (handoff && h && isAwayHuman(h) && (handoffPossible(room) || h.lastSeen + grace > now)) min(h.lastSeen + grace);
+      if (room.started && !room.over && on(room)) {
         ensure(room, now);
         for (const m of room.members) if (m.role === 'player' && !m.screen && (m.bot || m.away)) { const t = plan.nextAt[m.id]; if (t !== undefined) min(t); }
       }

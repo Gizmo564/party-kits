@@ -62,6 +62,22 @@ describe('independent timers', () => {
   });
 });
 
+describe('recheck plans', () => {
+  it('recheckMs asks the game again later without acting or changing the state', () => {
+    const asked: number[] = [];
+    const r = mk({ plan: (s, id, ctx) => { asked.push(ctx.now); if (s.winner) return null; return asked.length < 3 ? { recheckMs: 1500 } : { action: { type: 'tap' }, afterMs: 0 }; } });
+    setup(r);
+    expect(r.nextWake(0)).toBe(1500);
+    const before = r.eventSeq;
+    expect(r.tick(1500)).toBe(false);                      // nothing happened, nothing to save or broadcast
+    expect(r.eventSeq).toBe(before);
+    expect(r.nextWake(1500)).toBe(3000);
+    r.tick(3000);
+    r.nextWake(3000); r.tick(3050);
+    expect(taps(r)[botId(r)]).toBe(1);
+  });
+});
+
 describe('refused and idle plans', () => {
   it('a refused plan is retried a few times, then the seat sleeps until the state changes', () => {
     let asked = 0;
@@ -108,5 +124,15 @@ describe('away humans and lobby', () => {
     expect(send(r, 'h', { type: 'bot', op: 'add' })).toBeNull();
     expect(send(r, 'h', { type: 'bot', op: 'add' })).toMatch(/at most 1/);
     expect(send(r, 'h', { type: 'bot', op: 'remove' })).toBeNull();
+  });
+});
+
+describe('no busy alarm', () => {
+  it('an away host with nobody to hand the room to does not keep asking for a wake-up in the past', () => {
+    const r = mk({ plan: () => null, awayGraceMs: 1000 }); hello(r, 'h'); send(r, 'h', { type: 'bot', op: 'add' }); send(r, 'h', { type: 'start' }, 0);
+    r.disconnect('h', 100);
+    r.tick(1200);
+    const w = r.nextWake(1201);
+    expect(w === null || w > 1201).toBe(true);
   });
 });

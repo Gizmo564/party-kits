@@ -15,14 +15,15 @@
 import type { BaseRoom, Member, RoomPlugin } from '@gizmo564/room-server/server/base-room';
 import type { ActContext, GameLogic } from '@gizmo564/room-server/server/game-logic';
 import type { ClientMsg } from '@gizmo564/room-server/server/protocol';
-import { AWAY_GRACE_MS, MAX_BOTS_DEFAULT, flagAwayAndHandoff, lobbyBotMessage } from '@gizmo564/bots-away/server/bots-away';
+import { AWAY_GRACE_MS, MAX_BOTS_DEFAULT, flagAwayAndHandoff, handoffPossible, lobbyBotMessage } from '@gizmo564/bots-away/server/bots-away';
 
 /** after a refused plan, wait this long before planning again (stops a hot loop on a stale plan) */
 export const REPLAN_MS = 300;
 /** a seat whose plans are refused this many times in a row sleeps until the state changes */
 export const MAX_REFUSALS = 3;
 
-export interface Planned<A> { action: A; afterMs: number }
+/** do `action` after `afterMs`, or (recheckMs) do nothing yet and ask again later, e.g. a bot waiting for a better moment */
+export type Planned<A> = { action: A; afterMs: number } | { recheckMs: number };
 export interface BotsRealtimeOptions<S, A> {
   /** what this seat wants to do, and how long it "thinks" first. `away` is true for a disconnected human, false for a bot. */
   plan(state: S, seatId: string, ctx: ActContext, away: boolean): Planned<A> | null;
@@ -31,7 +32,7 @@ export interface BotsRealtimeOptions<S, A> {
   hostHandoff?: boolean;
 }
 
-interface SeatPlan<A> { action: A; at: number }
+interface SeatPlan<A> { action: A | null; at: number }
 /** idle[id] = the eventSeq at which planning returned nothing; ask again only once the state has changed */
 interface Store<A> { plans: Record<string, SeatPlan<A>>; idle: Record<string, number>; retryAt: Record<string, number>; fails: Record<string, number> }
 
@@ -59,7 +60,7 @@ export function botsRealtime<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts:
       if (!p) { st.idle[m.id] = room.eventSeq; continue; }
       delete st.idle[m.id];
       // a human who only just went away still gets a beat before the machine moves for them
-      st.plans[m.id] = { action: p.action, at: now + Math.max(0, p.afterMs) };
+      st.plans[m.id] = 'recheckMs' in p ? { action: null, at: now + Math.max(50, p.recheckMs) } : { action: p.action, at: now + Math.max(0, p.afterMs) };
     }
     for (const id of Object.keys(st.plans)) if (!live.has(id)) delete st.plans[id];
   }
@@ -89,6 +90,7 @@ export function botsRealtime<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts:
       if (best === null) return changed;
       const p = st.plans[best];
       delete st.plans[best];
+      if (p.action === null) return changed;   // a "look again later" slot: the next ensure() plans afresh, nothing to broadcast
       if (room.applyAct(best, p.action as never, now) !== null) {
         st.fails[best] = (st.fails[best] ?? 0) + 1;
         if (st.fails[best] >= MAX_REFUSALS) { st.idle[best] = room.eventSeq; delete st.fails[best]; } else st.retryAt[best] = now + REPLAN_MS;
@@ -103,7 +105,7 @@ export function botsRealtime<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts:
       const min = (t: number) => { if (Number.isFinite(t) && (at === null || t < at)) at = t; };
       for (const m of room.members) if (!m.bot && isAwayHuman(m) && !m.away) min(m.lastSeen + grace);
       const h = room.host;
-      if (handoff && h && isAwayHuman(h)) min(h.lastSeen + grace);
+      if (handoff && h && isAwayHuman(h) && (handoffPossible(room) || h.lastSeen + grace > now)) min(h.lastSeen + grace);
       if (room.started && !room.over) {
         ensure(room, now);
         for (const p of Object.values(st.plans)) min(p.at);

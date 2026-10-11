@@ -154,3 +154,28 @@ describe('persistence and nap', () => {
     expect(r.snapshot('h')!.plugins).toEqual({ botsAway: { graceMs: 9000 } });
   });
 });
+
+describe('botExtraMs', () => {
+  it('adds the game\'s extra time to a bot\'s thinking pause', () => {
+    const r = mk({ botExtraMs: () => 900 }); hello(r, 'h');
+    send(r, 'h', { type: 'bot', op: 'add' }); send(r, 'h', { type: 'settings', settings: { target: 2 } });
+    send(r, 'h', { type: 'start' }, 1000);
+    expect(r.nextWake(1000)).toBe(1000 + BOT_THINK_MS + 900);
+  });
+});
+
+describe('no busy alarm', () => {
+  it('an away host with nobody to hand the room to does not keep asking for a wake-up in the past', () => {
+    const r = mk(); hello(r, 'h'); send(r, 'h', { type: 'bot', op: 'add' }); send(r, 'h', { type: 'settings', settings: { target: 50 } });
+    send(r, 'h', { type: 'start' }, 0);
+    r.disconnect('h', 100);
+    r.tick(100 + AWAY_GRACE_MS);
+    const w = r.nextWake(100 + AWAY_GRACE_MS + 1);
+    expect(w === null || w > 100 + AWAY_GRACE_MS + 1).toBe(true);
+  });
+  it('enabled() lets a game sit the plugin out (a real-time mode run by another plugin)', () => {
+    const r = mk({ enabled: () => false }); hello(r, 'h'); send(r, 'h', { type: 'bot', op: 'add' }); send(r, 'h', { type: 'start' }, 1000);
+    expect(r.nextWake(1000)).toBeNull();
+    expect(r.tick(1000 + BOT_THINK_MS)).toBe(false);
+  });
+});
