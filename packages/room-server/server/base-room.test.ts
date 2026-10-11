@@ -338,6 +338,20 @@ describe('plugins', () => {
 });
 
 describe('logic hooks for richer games', () => {
+  it('startEvents appear in the first snapshot; actions get the music seat in their context', () => {
+    let ctxSeen: any;
+    const logic = {
+      ...toyLogic,
+      startEvents: (s: ToyState) => [{ kind: 'tap' as const, id: s.order[0] }],
+      act: (st: ToyState, seat: string, a: ToyAction, c: any) => { ctxSeen = c; return toyLogic.act(st, seat, a, c); },
+    };
+    const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', logic, [], 7);
+    hello(r, 'c1', { name: 'Ann' }); hello(r, 'c2', { name: 'Bo' });
+    expect(r.handle('c1', { type: 'start' } as Msg, 2000)).toBeNull();
+    expect(snap(r, 'c2').events).toHaveLength(1);
+    expect(r.handle('c2', { type: 'act', action: { type: 'tap' } } as Msg, 2100)).toBeNull();
+    expect(ctxSeen.musicId).toBe(snap(r, 'c1').you.id); // the host phone plays the music when there is no TV
+  });
   it('a game palette decides the colors handed out and accepted', () => {
     const palette = ['#111111', '#222222', '#333333'];
     const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', { ...toyLogic, palette }, [], 7);

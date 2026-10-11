@@ -13,6 +13,8 @@ export interface ActContext {
   now: number; seed: number;
   /** the seat id of the current host (null if nobody hosts), for actions only the host may take: skip, next round, abandon */
   hostId: string | null;
+  /** the seat id of the member whose device plays the music right now (null if none, or a TV, which is not a seat) */
+  musicId?: string | null;
 }
 
 /** Which device is looking: lets a view add things only that device needs (the music device gets the song to play). */
@@ -38,6 +40,8 @@ export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
 
   /** Build the game. `seed` is stored; use it for every shuffle so the game can be replayed. */
   start(input: { seats: Seat[]; settings: Settings; seed: number; now: number; /** whatever RoomConfig.startContext loaded for this start (a song list, a word pack...) */ ext?: unknown }): Result<State>;
+  /** Optional: events that explain the start itself (a starter draw, the first deal). Shown in the first snapshot. */
+  startEvents?(state: State): Ev[];
   /** One player action. Return the new state (do not mutate the old one) and the events that explain it. */
   act(state: State, seatId: string, action: Action, ctx: ActContext): Result<Step<State, Ev>>;
   /** What THIS viewer may see. `null` viewer = spectator / screen. Never include another player's secrets. */

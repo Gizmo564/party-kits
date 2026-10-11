@@ -321,7 +321,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
     const seed = this.nextSeed();
     const r = this.logic.start({ seats, settings: this.settings, seed, now, ext: this.startExt });
     if (!r.ok) return r.error;
-    this.game = r.value; this.events = []; this.eventSeq++;
+    this.game = r.value; this.events = (this.logic.startEvents?.(r.value) ?? []) as unknown[]; this.eventSeq++;
     for (const p of this.pluginList) p.onStart?.(this, now);
     return null;
   }
@@ -345,7 +345,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   applyAct(seatId: string, action: Action, now: number): string | null {
     if (!this.game) return 'the game has not started';
     if (this.logic.isOver(this.game)) return 'the game is over';
-    const r = this.logic.act(this.game, seatId, action, { now, seed: this.nextSeed(), hostId: this.host?.id ?? null });
+    const r = this.logic.act(this.game, seatId, action, { now, seed: this.nextSeed(), hostId: this.host?.id ?? null, musicId: this._members.find((m) => m.music && !m.screen)?.id ?? null });
     if (!r.ok) return r.error;
     this.game = r.value.state; this.events = r.value.events as unknown[]; this.eventSeq++;
     return null;
