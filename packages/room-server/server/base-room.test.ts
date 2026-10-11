@@ -352,6 +352,15 @@ describe('logic hooks for richer games', () => {
     expect(r.handle('c2', { type: 'act', action: { type: 'tap' } } as Msg, 2100)).toBeNull();
     expect(ctxSeen.musicId).toBe(snap(r, 'c1').you.id); // the host phone plays the music when there is no TV
   });
+  it('systemAction moves are refused from players but still work through applyAct (bots, away)', () => {
+    const logic = { ...toyLogic, systemAction: (a: ToyAction) => a.type === 'pass' };
+    const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', logic, [], 7);
+    hello(r, 'c1', { name: 'Ann' }); hello(r, 'c2', { name: 'Bo' });
+    r.handle('c1', { type: 'start' } as Msg, 2000);
+    expect(r.handle('c2', { type: 'act', action: { type: 'pass' } } as Msg, 2100)).toMatch(/not allowed/);
+    expect(r.handle('c2', { type: 'act', action: { type: 'tap' } } as Msg, 2100)).toBeNull();
+    expect(r.applyAct(snap(r, 'c2').you.id, { type: 'pass' }, 2200)).toBeNull();
+  });
   it('a game palette decides the colors handed out and accepted', () => {
     const palette = ['#111111', '#222222', '#333333'];
     const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', { ...toyLogic, palette }, [], 7);

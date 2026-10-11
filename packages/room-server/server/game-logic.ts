@@ -40,6 +40,8 @@ export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
 
   /** Build the game. `seed` is stored; use it for every shuffle so the game can be replayed. */
   start(input: { seats: Seat[]; settings: Settings; seed: number; now: number; /** whatever RoomConfig.startContext loaded for this start (a song list, a word pack...) */ ext?: unknown }): Result<State>;
+  /** Optional: actions only the room itself may take (an away player's automatic pass). A player sending one gets refused. */
+  systemAction?(action: Action): boolean;
   /** Optional: events that explain the start itself (a starter draw, the first deal). Shown in the first snapshot. */
   startEvents?(state: State): Ev[];
   /** One player action. Return the new state (do not mutate the old one) and the events that explain it. */

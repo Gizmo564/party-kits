@@ -338,6 +338,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   private act(me: Member, action: Action, now: number): string | null {
     if (!this.game) return 'the game has not started';
     if (me.role !== 'player' || me.screen) return 'spectators cannot play';
+    if (this.logic.systemAction?.(action)) return 'that move is not allowed';
     return this.applyAct(me.id, action, now);
   }
 
