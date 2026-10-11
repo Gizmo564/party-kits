@@ -58,7 +58,7 @@ export function LobbyScreen<S extends Record<string, any>>(p: LobbyScreenProps<S
     return (
       <div className="page setup tvlobby" data-testid="tv-lobby">
         <div className="row between">
-          <button className="btn small" onClick={p.onLeave}>Leave</button>
+          <span />
           <h1 className="h-lg">Lobby</h1>
           <FullscreenButton />
         </div>

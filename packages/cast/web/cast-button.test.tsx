@@ -3,9 +3,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { isCastReceiver, onCastScreen } from './receiver';
 
+let failed = false;
 vi.mock('./sender', async (orig) => {
   const real = await orig<typeof import('./sender')>();
-  const caster = { view: () => ({ state: 'ready', device: '' }), subscribe: () => () => {}, start: async () => {}, stop: () => {}, sync: () => {} };
+  const caster = { view: () => ({ state: failed ? 'failed' : 'ready', device: '' }), subscribe: () => () => {}, start: async () => {}, stop: () => {}, sync: () => {} };
   return { ...real, getCaster: () => ({ caster, setCode: () => {} }) };
 });
 import { CastButton } from './CastButton';
@@ -36,5 +37,13 @@ describe('CastButton', () => {
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 CrKey/1.56 Chrome/96');
     render(<CastButton game="g" code="ABCD" />);
     expect(screen.queryByTestId('cast-btn')).toBeNull();
+  });
+  it('after a failed cast shows the message and the fallback (TV link + QR)', () => {
+    failed = true;
+    render(<CastButton game="g" code="ABCD" fallback={<i data-testid="fb">link</i>} />);
+    expect(screen.getByTestId('cast-btn').textContent).toBe('Try again');
+    expect(screen.getByTestId('cast-failed')).toBeTruthy();
+    expect(screen.getByTestId('fb')).toBeTruthy();
+    failed = false;
   });
 });

@@ -5,6 +5,7 @@ import { ResultsScreen, RulesButton, Tutorial } from '@gizmo564/rules-results/we
 import { DisplayShell, Stage } from '@gizmo564/host-display/web';
 import { MusicButton, useMusicDevice } from '@gizmo564/audio/web';
 import { CastButton, isCastReceiver } from '@gizmo564/cast/web';
+import { Qr } from '@gizmo564/lobby-ui/web/Qr';
 import { ROSTER, EMOJIS, LIMITS, type LuckyAction, type LuckySettings, type LuckyView } from '@game/engine';
 import { audio } from '../audio';
 import { RULES, TOUR } from '../rules';
@@ -38,6 +39,8 @@ export function Online({ code, role, name, onLeave }: { code: string; role: 'pla
 
   const me = snap.members.find((m) => m.id === snap.you.id);
   const joinUrl = ROSTER.shareUrl(code);
+  // shown by the Cast button when casting fails: the link and a QR, so the TV's own browser (or a laptop on it) can open the game
+  const castFallback = <div className="center-col"><Qr text={joinUrl} size={140} /><small className="muted">{joinUrl.replace(/^https?:\/\//, '')}</small></div>;
   const v = snap.view;
 
   // ---- lobby ----
@@ -58,7 +61,7 @@ export function Online({ code, role, name, onLeave }: { code: string; role: 'pla
             </div>
           }
         >
-          {snap.you.host || display ? <CastButton game={GAME} code={code} className="btn" /> : null}
+          {snap.you.host || display ? <CastButton game={GAME} code={code} className="btn" fallback={castFallback} /> : null}
         </LobbyScreen>
       </>
     );
@@ -100,7 +103,7 @@ export function Online({ code, role, name, onLeave }: { code: string; role: 'pla
         <details className="panel hostpanel" data-testid="host-controls">
           <summary>Host controls</summary>
           {/* everything the TV cannot do lives here: Show on TV, where the music plays, who is here. Add the game's own buttons as children */}
-          <HostPanel snap={snap} send={send} cast={<CastButton game={GAME} code={code} className="btn small" />} onUnlock={() => void audio.unlock()} />
+          <HostPanel snap={snap} send={send} cast={<CastButton game={GAME} code={code} className="btn small" fallback={castFallback} />} onUnlock={() => void audio.unlock()} />
         </details>
       ) : null}
       {table}

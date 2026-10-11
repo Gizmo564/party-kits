@@ -8,7 +8,7 @@ export type CastReply = { type: 'loaded'; game: string; code: string } | { type:
 
 
 // ---------- sender ----------
-export type CastState = 'loading' | 'unsupported' | 'no-devices' | 'ready' | 'connecting' | 'casting';
+export type CastState = 'loading' | 'unsupported' | 'no-devices' | 'ready' | 'connecting' | 'casting' | 'failed';
 export interface CasterView { state: CastState; device: string }
 
 interface Framework {
@@ -64,6 +64,7 @@ export function createCaster(opts: { appId: string; game: string; getCode: () =>
     if (!ctx || !win.cast) return;
     const raw = ctx.getCastState();
     const sess = ctx.getCurrentSession();
+    if (v.state === 'failed' && raw !== 'CONNECTED') return; // keep the failure message until the next try or a real connection
     const state: CastState = raw === 'CONNECTED' ? 'casting' : raw === 'CONNECTING' ? 'connecting' : raw === 'NO_DEVICES_AVAILABLE' ? 'no-devices' : 'ready';
     set({ state, device: state === 'casting' ? sess?.getCastDevice().friendlyName ?? '' : '' });
   };
@@ -91,7 +92,15 @@ export function createCaster(opts: { appId: string; game: string; getCode: () =>
   return {
     view: () => v,
     subscribe(f) { subs.add(f); return () => { subs.delete(f); }; },
-    async start() { if (ctx) { try { await ctx.requestSession(); } catch { /* the person closed the device picker */ } } },
+    async start() {
+      if (!ctx) return;
+      if (v.state === 'failed') set({ state: 'ready', device: '' });
+      try { await ctx.requestSession(); } catch (e) {
+        // Cast rejects with a string code; 'cancel' = the person closed the picker (not a failure). Any other code (no receiver, timeout, session error)
+        // is a failed cast, so the game can show the fallback. The exact codes were not verified on a real TV.
+        if (String(e) !== 'cancel') set({ state: 'failed', device: '' });
+      }
+    },
     stop() { ctx?.endCurrentSession(true); },
     sync: send,
   };

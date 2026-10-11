@@ -131,6 +131,17 @@ describe('fitGrid', () => {
   });
 });
 
+describe('FullscreenButton on a cast TV', () => {
+  it('hides itself on the Chromecast receiver', () => {
+    Object.defineProperty(document, 'fullscreenEnabled', { value: true, configurable: true });
+    const spy = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 CrKey/1.56 Chrome/96');
+    const { container } = render(<FullscreenButton />);
+    expect(container.querySelector('button')).toBeNull();
+    spy.mockRestore();
+    Object.defineProperty(document, 'fullscreenEnabled', { value: undefined, configurable: true });
+  });
+});
+
 describe('FullscreenButton', () => {
   it('hides itself where fullscreen is unsupported and shows where it works', () => {
     const { container } = render(<FullscreenButton />);

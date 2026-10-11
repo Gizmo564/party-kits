@@ -5,8 +5,10 @@ type FsEl = HTMLElement & { webkitRequestFullscreen?: () => Promise<void> };
 const doc = () => document as FsDoc;
 const isFull = () => !!(doc().fullscreenElement || doc().webkitFullscreenElement);
 const supported = () => !!(doc().fullscreenEnabled || doc().webkitFullscreenEnabled);
+/** a cast TV (Chromecast receiver, or a page framed by it) is already full screen */
+const onCastTv = () => /CrKey/.test(navigator.userAgent || '') || window.self !== window.top;
 
-/** Hides the address bar and tabs. Browsers only allow it from a tap, and iPhone Safari does not support it for web pages, so the button hides itself there. Show it on the host display only. */
+/** Hides the address bar and tabs. Browsers only allow it from a tap, and iPhone Safari does not support it for web pages, so the button hides itself there. Show it on the host display only; it hides itself on a cast TV, which is already full screen. */
 export function FullscreenButton({ className = 'btn small' }: { className?: string }) {
   const [full, setFull] = useState(isFull());
   useEffect(() => {
@@ -15,7 +17,7 @@ export function FullscreenButton({ className = 'btn small' }: { className?: stri
     document.addEventListener('webkitfullscreenchange', on);
     return () => { document.removeEventListener('fullscreenchange', on); document.removeEventListener('webkitfullscreenchange', on); };
   }, []);
-  if (!supported()) return null;
+  if (!supported() || onCastTv()) return null;
   const toggle = () => {
     const el = document.documentElement as FsEl;
     try {

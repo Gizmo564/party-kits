@@ -78,4 +78,18 @@ describe('sender: createCaster', () => {
     await new Promise((r) => setTimeout(r, 0));
     expect(c.view().state).toBe('no-devices');
   });
+  it('a failed cast request shows as failed; closing the picker does not', async () => {
+    const f = fakeWin();
+    const c = createCaster({ appId: 'ABC123', game: 'chameleon', getCode: () => 'LWQS', win: f.win as never });
+    await new Promise((r) => setTimeout(r, 0));
+    f.ctx.requestSession = async () => { throw 'cancel'; };
+    await c.start();
+    expect(c.view().state).toBe('ready');
+    f.ctx.requestSession = async () => { throw 'receiver_unavailable'; };
+    await c.start();
+    expect(c.view().state).toBe('failed');
+    f.ctx.requestSession = async () => { throw 'cancel'; };
+    await c.start();                       // trying again clears the failure
+    expect(c.view().state).toBe('ready');
+  });
 });

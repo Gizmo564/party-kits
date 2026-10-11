@@ -105,7 +105,7 @@ describe('the TV lobby (no scroll, nothing to tap)', () => {
     expect(screen.getAllByTestId('member').length).toBe(4);
     expect(document.querySelectorAll('.tvplayers .avatar-svg').length).toBe(4);
     expect(screen.getByText('Ann starts the game from their phone.')).toBeTruthy();
-    for (const gone of ['Start game', 'Add a bot', 'Copy link']) expect(screen.queryByText(gone)).toBeNull();
+    for (const gone of ['Start game', 'Add a bot', 'Copy link', 'Leave']) expect(screen.queryByText(gone)).toBeNull();
     expect(document.querySelector('fieldset')).toBeNull();                       // no settings form
     expect(screen.queryByText(/Only the host can change/)).toBeNull();
     expect(screen.queryByText('You')).toBeNull();
