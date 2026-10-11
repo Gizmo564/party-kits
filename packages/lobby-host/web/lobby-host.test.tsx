@@ -7,7 +7,7 @@ import type { MemberInfo, Snapshot } from '@gizmo564/room-server/server/protocol
 afterEach(cleanup);
 interface S { target: number; fast: boolean; mode: string; secret: number }
 const sections: SectionDef<S>[] = [
-  { title: 'Rules', note: 'Pick wisely.', fields: [
+  { title: 'Rules', note: 'Pick wisely.', defaultOpen: true, fields: [
     { key: 'target', kind: 'stepper', label: 'Target', min: 1, max: 9 },
     { key: 'fast', kind: 'toggle', label: 'Fast mode' },
     { key: 'mode', kind: 'choice', label: 'Mode', options: [{ value: 'a', label: 'Alpha' }, { value: 'b', label: 'Beta' }] },

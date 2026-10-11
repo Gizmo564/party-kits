@@ -1,0 +1,32 @@
+/*
+ * Layout pieces from @gizmo564/lobby-ui: Collapsible, Hint, StickyBar. They only use these tokens (with fallbacks), so
+ * every game keeps its own look: --surface, --line, --border, --ink, --ink-soft, --radius, --font-display.
+ */
+.panel.collapsible { padding: 0; gap: 0; overflow: hidden; }
+.collapsible-head {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 54px; padding: 10px 16px; margin: 0;
+  background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.collapsible-title { font-family: var(--font-display, inherit); font-weight: 700; font-size: 18px; white-space: nowrap; }
+.collapsible-summary { flex: 1; min-width: 0; text-align: right; color: var(--ink-soft, #666); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.collapsible-icon { display: inline-flex; }
+.collapsible-chev { transition: transform .15s ease; font-size: 14px; }
+.collapsible.open .collapsible-chev { transform: rotate(180deg); }
+.collapsible.open .collapsible-summary { visibility: hidden; }
+.collapsible-body { display: flex; flex-direction: column; gap: 10px; padding: 0 16px 16px; }
+.collapsible-body[hidden] { display: none; }
+
+.hint { display: inline; }
+.hint-btn {
+  width: 26px; height: 26px; min-width: 26px; padding: 0; margin: 0 0 0 6px; border-radius: 50%; vertical-align: middle;
+  border: 2px solid var(--ink-soft, #666); background: transparent; color: var(--ink-soft, #666);
+  font: italic 700 15px/1 Georgia, serif; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+}
+.hint-text { display: block; margin-top: 6px; color: var(--ink-soft, #666); font-size: 14px; font-weight: 400; font-style: normal; line-height: 1.35; }
+
+.stickybar {
+  position: sticky; bottom: 0; z-index: 5; display: flex; flex-direction: column; gap: 6px; align-items: stretch;
+  margin: 0 -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--surface, #fff); border-top: var(--border, 3px) solid var(--line, #222);
+}
+.stickybar .muted { text-align: center; margin: 0; }

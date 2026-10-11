@@ -160,11 +160,11 @@ html.cast *, html.cast *::before, html.cast *::after { animation: none !importan
 /* ---------- the TV lobby: fits the window, never scrolls ---------- */
 .page.tvlobby { max-width: min(1400px, 96vw); height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); grid-template-rows: auto minmax(0, 1fr); gap: clamp(8px, 1.6vh, 16px) clamp(12px, 2.4vw, 32px); padding: clamp(8px, 1.6vh, 20px) 16px; box-sizing: border-box; }
 .page.tvlobby > .row:first-child { grid-column: 1 / -1; }
-.tvlobby .tvleft { min-height: 0; display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: clamp(6px, 1.4vh, 14px); }
+.tvlobby .tvleft { min-height: 0; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: clamp(6px, 1.4vh, 14px); }
 .tvlobby .bigcode { font-size: clamp(44px, 12vh, 120px); }
 .tvlobby .qr { width: clamp(120px, 34vh, 260px) !important; height: clamp(120px, 34vh, 260px) !important; }
 .tvlobby .tvnote { margin: 0; }
-.tvlobby .playerpanel { min-height: 0; overflow: hidden; align-self: stretch; }
+.tvlobby .playerpanel { min-height: 0; overflow: hidden; align-self: start; }
 .tvplayers { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 22vh, 260px), 1fr)); gap: clamp(4px, 1vh, 10px) 12px; align-content: start; min-height: 0; }
 .tvplayers .player-row { min-height: 0; font-size: clamp(14px, 2.8vh, 26px); }
 .tvplayers .avatar { width: clamp(28px, 5vh, 52px) !important; height: clamp(28px, 5vh, 52px) !important; }

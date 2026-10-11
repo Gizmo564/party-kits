@@ -3,6 +3,7 @@ import type { MemberInfo } from '@gizmo564/room-server/server/protocol';
 import { Avatar, LOOK_COUNT } from './avatars';
 import { ColorPicker } from './controls';
 import { Qr } from './Qr';
+import { Collapsible } from './collapse';
 
 /** The big room code, the join address, and a QR. Show the QR on a host display and while the room waits for a host. */
 export function CodePanel({ code, joinUrl, showQr = false, qrSize = 160, tv = false }: { code: string; joinUrl: string; showQr?: boolean; qrSize?: number; /** a TV: nothing to tap, so no Copy link button */ tv?: boolean }) {
@@ -62,16 +63,15 @@ export function PlayerList({ members, meId, hostControls, max, extra, tv = false
   );
 }
 
-/** "You": name, face, color. `children` is where a game adds its own fields (team, role). */
-export function ProfileEditor({ me, members, colors, lookCount = LOOK_COUNT, onProfile, children }: {
+/** "You": name, face, color. `children` is where a game adds its own fields (team, role). `collapsible` folds it to one line (your name) until tapped. */
+export function ProfileEditor({ me, members, colors, lookCount = LOOK_COUNT, onProfile, children, collapsible = false }: {
   me: MemberInfo; members: readonly MemberInfo[]; colors: readonly string[]; lookCount?: number;
-  onProfile: (patch: { name?: string; color?: string; avatar?: number }) => void; children?: ReactNode;
+  onProfile: (patch: { name?: string; color?: string; avatar?: number }) => void; children?: ReactNode; collapsible?: boolean;
 }) {
   const [name, setName] = useState(me.name);
   const taken = members.filter((m) => m.id !== me.id).map((m) => m.color);
-  return (
-    <section className="panel">
-      <h2>You</h2>
+  const body = (
+    <>
       <input className="field" aria-label="Your name" maxLength={20} value={name} onChange={(e) => setName(e.target.value)} onBlur={() => name.trim() && name.trim() !== me.name && onProfile({ name: name.trim() })} />
       {lookCount > 0 ? (
         <div className="looks" role="radiogroup" aria-label="Your face">
@@ -84,6 +84,15 @@ export function ProfileEditor({ me, members, colors, lookCount = LOOK_COUNT, onP
       ) : null}
       <ColorPicker colors={colors} value={me.color} taken={taken} onPick={(c) => onProfile({ color: c })} />
       {children}
+    </>
+  );
+  if (collapsible) {
+    return <Collapsible title="You" summary={me.name} icon={<Avatar name={me.name} color={me.color} size={26} look={me.avatar} />} testId="profile">{body}</Collapsible>;
+  }
+  return (
+    <section className="panel">
+      <h2>You</h2>
+      {body}
     </section>
   );
 }

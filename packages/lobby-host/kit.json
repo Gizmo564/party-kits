@@ -2,7 +2,8 @@
   "name": "lobby-host",
   "description": "The online lobby assembled from the kit: LobbyScreen (code/QR, take-control, players with kick/make-host, bots, profile, settings, Start with a reason) and a schema-driven SettingsForm.",
   "tests": [
-    "web/lobby-host.test.tsx"
+    "web/lobby-host.test.tsx",
+    "web/layout.test.tsx"
   ],
   "requires": [
     "lobby-ui",

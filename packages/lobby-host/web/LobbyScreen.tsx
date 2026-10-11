@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { PLAYER_COLORS } from '@gizmo564/engine-core/engine';
 import type { ClientMsg, Snapshot } from '@gizmo564/room-server/server/protocol';
-import { CodePanel, FullscreenButton, PlayerList, ProfileEditor, LOOK_COUNT } from '@gizmo564/lobby-ui/web';
+import { CodePanel, FullscreenButton, PlayerList, ProfileEditor, StickyBar, LOOK_COUNT } from '@gizmo564/lobby-ui/web';
 import { SettingsForm, type SectionDef } from './SettingsForm';
 import { MusicWhere } from './HostPanel';
 
@@ -26,8 +26,12 @@ export interface LobbyScreenProps<S extends Record<string, any>> {
   /** play a sound when someone joins: pass sfx('join') */
   onJoinSound?: () => void;
   avatarLooks?: number;
-  /** rendered between the player list and the settings (cast button, team toggle...) */
+  /** rendered between the player list and the settings (game panels, team toggle...) */
   children?: ReactNode;
+  /** TV and sound buttons (Show on TV, Show on wired TV...). On a phone: one row under the players. On a TV: in the top bar beside Full screen. */
+  devices?: ReactNode;
+  /** fold "You" (name, face, color) to one line until tapped. Default true: the lobby stays short and Start stays in reach */
+  profileCollapsed?: boolean;
   startLabel?: string;
 }
 
@@ -58,9 +62,8 @@ export function LobbyScreen<S extends Record<string, any>>(p: LobbyScreenProps<S
     return (
       <div className="page setup tvlobby" data-testid="tv-lobby">
         <div className="row between">
-          <span />
           <h1 className="h-lg">Lobby</h1>
-          <FullscreenButton />
+          <div className="row">{p.devices}<FullscreenButton /></div>
         </div>
         <div className="tvleft">
           <CodePanel code={snap.code} joinUrl={p.joinUrl} showQr qrSize={220} tv />
@@ -102,24 +105,26 @@ export function LobbyScreen<S extends Record<string, any>>(p: LobbyScreenProps<S
       ) : null}
 
       {me.role === 'player' ? (
-        <ProfileEditor me={me} members={snap.members} colors={PLAYER_COLORS} lookCount={p.avatarLooks ?? LOOK_COUNT} onProfile={(patch) => send({ type: 'profile', ...patch })}>
+        <ProfileEditor collapsible={p.profileCollapsed ?? true} me={me} members={snap.members} colors={PLAYER_COLORS} lookCount={p.avatarLooks ?? LOOK_COUNT} onProfile={(patch) => send({ type: 'profile', ...patch })}>
           {p.profileExtra}
         </ProfileEditor>
       ) : null}
 
+      {p.devices ? <div className="row" data-testid="devices">{p.devices}</div> : null}
       {p.children}
 
       {host ? <MusicWhere snap={snap} send={send} /> : null}
       <SettingsForm sections={p.sections} settings={snap.settings} disabled={!host} onChange={(patch) => send({ type: 'settings', settings: patch })} />
       {!host ? <p className="muted">Only the host can change the game settings.</p> : null}
-
       {p.error ? <p className="err" role="alert">{p.error}</p> : null}
-      {host ? (
-        <>
-          {reason ? <p className="muted" data-testid="start-reason">{reason}</p> : null}
-          <button className="btn accent big" disabled={!!reason} onClick={() => send({ type: 'start' })}>{p.startLabel ?? 'Start game'}</button>
-        </>
-      ) : <p className="muted center-text">Waiting for the host to start…</p>}
+      <StickyBar>
+        {host ? (
+          <>
+            {reason ? <p className="muted" data-testid="start-reason">{reason}</p> : null}
+            <button className="btn accent big" disabled={!!reason} onClick={() => send({ type: 'start' })}>{p.startLabel ?? 'Start game'}</button>
+          </>
+        ) : <p className="muted center-text">Waiting for the host to start…</p>}
+      </StickyBar>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Hint } from '@gizmo564/lobby-ui/web/collapse';
 import type { ClientMsg, Snapshot } from '@gizmo564/room-server/server/protocol';
 
 /**
@@ -11,10 +12,11 @@ export function MusicWhere({ snap, send, onUnlock }: { snap: Snapshot<any, any>;
   const here = snap.you.music;
   return (
     <section className="panel" data-testid="music-where">
-      <h2>Where the music plays</h2>
-      <p className="muted">{here
-        ? 'Songs play from this phone. The TV shows the game with the sound off.'
-        : 'Sound plays from the TV. If casting makes it choppy, play it from this phone instead (a Bluetooth speaker works well).'}</p>
+      <h2>Where the music plays
+        <Hint label="About where the music plays">{here
+          ? 'Songs play from this phone. The TV shows the game with the sound off.'
+          : 'Sound plays from the TV. If casting makes it choppy, play it from this phone instead (a Bluetooth speaker works well).'}</Hint>
+      </h2>
       <div className="row">
         <button type="button" className={`btn small${here ? ' primary' : ''}`} aria-pressed={here} onClick={() => { onUnlock?.(); send({ type: 'music', on: true }); }}>This phone</button>
         <button type="button" className={`btn small${here ? '' : ' primary'}`} aria-pressed={!here} onClick={() => send({ type: 'music', on: false })}>The TV</button>

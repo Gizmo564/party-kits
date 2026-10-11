@@ -1,4 +1,5 @@
 export * from './avatars';
+export * from './collapse';
 export * from './controls';
 export * from './fit';
 export * from './FullscreenButton';
