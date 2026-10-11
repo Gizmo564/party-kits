@@ -243,3 +243,39 @@ describe('stats', () => {
     expect(statsCalls).toEqual(['game_created', 'player_joined', 'player_joined', 'round_finished']);
   });
 });
+
+describe('startContext', () => {
+  it('loads game data just before start, hands it to the logic, and does not keep it', async () => {
+    let seen: unknown = 'unset';
+    class CtxDO extends GameRoomDO<RoomEnv> {
+      protected readonly cfg: RoomConfig = {
+        logic: { ...toyLogic, start: (i) => { seen = i.ext; return toyLogic.start(i); } },
+        site: 'toy', startContext: async () => ({ songs: 42 }),
+      };
+    }
+    const f = fakeCtx(); const d = new CtxDO(f.ctx, env());
+    await d.fetch(new Request('https://room/create', { method: 'POST', body: 'abcd' }));
+    const a = connect(f, 1), b = connect(f, 2);
+    await send(d as unknown as TestDO, a, { type: 'hello', name: 'Ann' });
+    await send(d as unknown as TestDO, b, { type: 'hello', name: 'Bo' });
+    await send(d as unknown as TestDO, a, { type: 'start' });
+    expect(seen).toEqual({ songs: 42 });
+    expect(a.last('state').started).toBe(true);
+  });
+  it('a failing loader still lets the logic refuse cleanly (ext is undefined)', async () => {
+    let seen: unknown = 'unset';
+    class BadDO extends GameRoomDO<RoomEnv> {
+      protected readonly cfg: RoomConfig = {
+        logic: { ...toyLogic, start: (i) => { seen = i.ext; return toyLogic.start(i); } },
+        site: 'toy', startContext: async () => { throw new Error('assets down'); },
+      };
+    }
+    const f = fakeCtx(); const d = new BadDO(f.ctx, env());
+    await d.fetch(new Request('https://room/create', { method: 'POST', body: 'abcd' }));
+    const a = connect(f, 1), b = connect(f, 2);
+    await send(d as unknown as TestDO, a, { type: 'hello', name: 'Ann' });
+    await send(d as unknown as TestDO, b, { type: 'hello', name: 'Bo' });
+    await send(d as unknown as TestDO, a, { type: 'start' });
+    expect(seen).toBeUndefined();
+  });
+});

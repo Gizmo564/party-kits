@@ -31,6 +31,8 @@ export interface RoomConfig {
   site: string;
   /** fresh plugin instances for one room (plugins hold per-room state, so never share them) */
   plugins?: () => RoomPlugin[];
+  /** async data a game needs at the moment it starts (a song list from the static assets...). Handed to GameLogic.start as `ext`. */
+  startContext?: (env: any, room: BaseRoom) => Promise<unknown> | unknown;
 }
 
 export const IDLE_DEFAULT_MS = 30 * 60_000;
@@ -185,7 +187,11 @@ export abstract class GameRoomDO<E extends RoomEnv = RoomEnv> implements Durable
     if (msg.type === 'ping') { try { ws.send(JSON.stringify({ type: 'pong' } satisfies ServerMsg)); } catch { /* gone */ } return; }
     await this.touch();
     const before = { members: room.members.length, over: room.over };
+    if (msg.type === 'start' && this.cfg.startContext) {
+      try { room.startExt = await this.cfg.startContext(this.env, room); } catch { room.startExt = undefined; }
+    }
     const err = room.handle(att.conn, msg);
+    room.startExt = undefined;
     if (msg.type === 'hello' && !err) {
       att.member = room.memberIdOf(att.conn);
       ws.serializeAttachment(att);

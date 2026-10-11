@@ -15,6 +15,9 @@ export interface ActContext {
   hostId: string | null;
 }
 
+/** Which device is looking: lets a view add things only that device needs (the music device gets the song to play). */
+export interface ViewerInfo { music: boolean; host: boolean; screen: boolean }
+
 export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
   /** short id, also the stats site name: 'my-game' */
   id: string;
@@ -26,15 +29,17 @@ export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
   defaultSettings(): Settings;
   /** Merge a host's patch into the current settings. Clamp numbers and drop unknown keys; return an error string for nonsense. */
   cleanSettings(patch: unknown, current: Settings, players: number): Settings | string;
+  /** Optional: the profile a brand-new player starts with (a team, a role...). `seated` is how many players are already seated. */
+  initialProfile?(seated: number): Record<string, unknown>;
   /** Optional: validate/merge a player's own profile fields (team, role...). Return the new data or an error string. */
   cleanProfile?(current: Record<string, unknown>, patch: Record<string, unknown>): Record<string, unknown> | string;
 
   /** Build the game. `seed` is stored; use it for every shuffle so the game can be replayed. */
-  start(input: { seats: Seat[]; settings: Settings; seed: number; now: number }): Result<State>;
+  start(input: { seats: Seat[]; settings: Settings; seed: number; now: number; /** whatever RoomConfig.startContext loaded for this start (a song list, a word pack...) */ ext?: unknown }): Result<State>;
   /** One player action. Return the new state (do not mutate the old one) and the events that explain it. */
   act(state: State, seatId: string, action: Action, ctx: ActContext): Result<Step<State, Ev>>;
   /** What THIS viewer may see. `null` viewer = spectator / screen. Never include another player's secrets. */
-  view(state: State, viewer: string | null): View;
+  view(state: State, viewer: string | null, who?: ViewerInfo): View;
   isOver(state: State): boolean;
   /** true = the host may send `again` in the middle of a game to abandon it and return everyone to the lobby (no game-over screen, no finished-round count) */
   abandonable?: boolean;

@@ -6,7 +6,7 @@
 //   start / again, kick / makeHost, per-viewer snapshots, timers, JSON persistence, plugins (bots, away...).
 // What the game owns: everything in GameLogic.
 import { cleanText, freeColor, MAX_NAME, newMemberId, newSeed, newToken, PLAYER_COLORS } from '@gizmo564/engine-core/engine';
-import type { GameLogic, Seat } from './game-logic';
+import type { GameLogic, Seat, ViewerInfo } from './game-logic';
 import type { ClientMsg, MemberInfo, Role, Snapshot } from './protocol';
 
 /** the most members (players + watchers + screens) a room will hold */
@@ -64,6 +64,8 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   code: string;
   /** set when the host sends `end`; the Durable Object then closes the room for everyone and frees the code */
   endRequested = false;
+  /** loaded by the Durable Object just before a `start` (RoomConfig.startContext); handed to GameLogic.start, never saved */
+  startExt: unknown = undefined;
   settings: Settings;
   game: State | null = null;
   events: unknown[] = [];
@@ -200,6 +202,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
       m = this.addMember({
         name: cleanText(msg.name, MAX_NAME) || (msg.screen ? 'Display' : wantWatch ? 'Watcher' : `Player ${seated + 1}`),
         role: wantWatch ? 'spectator' : 'player', screen: !!msg.screen, cast: !!msg.screen && !!msg.cast,
+        data: wantWatch ? {} : { ...(this.logic.initialProfile?.(seated) ?? {}) },
         // the first player in is the host (a TV or a spectator never is); a room opened from a TV is hosted by its first phone.
         // Same rule as Track Record and Chameleon (Sandwich Slam has no host concept: FLAGS.md)
         host: !msg.screen && !wantWatch && !this.started && !this._members.some((x) => x.host),
@@ -316,7 +319,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
     if (seats.length < this.logic.minPlayers) return `need at least ${this.logic.minPlayers} players`;
     if (seats.length > this.logic.maxPlayers) return `at most ${this.logic.maxPlayers} players`;
     const seed = this.nextSeed();
-    const r = this.logic.start({ seats, settings: this.settings, seed, now });
+    const r = this.logic.start({ seats, settings: this.settings, seed, now, ext: this.startExt });
     if (!r.ok) return r.error;
     this.game = r.value; this.events = []; this.eventSeq++;
     for (const p of this.pluginList) p.onStart?.(this, now);
@@ -400,12 +403,13 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
     const plugins: Record<string, unknown> = {};
     for (const p of this.pluginList) { const d = p.publicData?.(this); if (d !== undefined) plugins[p.id] = d; }
     const viewer = me.role === 'player' && !me.screen ? me.id : null;
+    const who: ViewerInfo = { music: me.music, host: me.host, screen: me.screen };
     return {
       type: 'state', v: 1, code: this.code,
       you: { id: me.id, token: me.token, role: me.role, host: me.host, screen: me.screen, music: me.music },
       members: this._members.map((m) => this.info(m)),
       settings: this.settings, started: this.started, over: this.over,
-      view: this.game ? this.logic.view(this.game, viewer) : null,
+      view: this.game ? this.logic.view(this.game, viewer, who) : null,
       events: this.events, eventSeq: this.eventSeq, deadline: this.deadline, serverNow: now, plugins,
     };
   }

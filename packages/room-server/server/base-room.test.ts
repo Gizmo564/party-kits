@@ -336,3 +336,24 @@ describe('plugins', () => {
     expect(r.handle('c1', { type: 'nonsense' } as never)).toBe('unknown message');
   });
 });
+
+describe('logic hooks for richer games', () => {
+  it('initialProfile seeds each new player (not watchers); view learns which device is looking; start gets the loaded context', () => {
+    let seenExt: unknown;
+    const logic = {
+      ...toyLogic,
+      initialProfile: (seated: number) => ({ team: seated % 2 }),
+      start: (i: Parameters<typeof toyLogic.start>[0]) => { seenExt = i.ext; return toyLogic.start(i); },
+      view: (s: ToyState, v: string | null, who?: { music: boolean; host: boolean; screen: boolean }) => ({ ...toyLogic.view(s, v), who }) as ToyView & { who?: unknown },
+    };
+    const r = new BaseRoom<ToySettings, ToyState, ToyAction, any>('ABCD', logic as any, [], 7);
+    hello(r, 'c1', { name: 'Ann' }); hello(r, 'c2', { name: 'Bo' }); hello(r, 'c3', { name: 'Cy' }); hello(r, 'tv', { screen: true });
+    const m = snap(r, 'c1').members;
+    expect(m.map((x) => x.data?.team)).toEqual([0, 1, 0, undefined]);
+    r.startExt = { songs: 3 };
+    expect(r.handle('c1', { type: 'start' } as Msg, 2000)).toBeNull();
+    expect(seenExt).toEqual({ songs: 3 });
+    expect((snap(r, 'tv').view as any).who).toEqual({ music: true, host: false, screen: true });
+    expect((snap(r, 'c1').view as any).who).toEqual({ music: false, host: true, screen: false });
+  });
+});
