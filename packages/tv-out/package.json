@@ -1,0 +1,34 @@
+{
+  "name": "@gizmo564/tv-out",
+  "version": "0.1.0",
+  "description": "Show the room's TV screen on a wired (HDMI) display: a \"Show on wired TV\" button that opens the display page in its own window (placed on the second screen in Chrome/Edge), an \"Open on another device\" link for phone hosts, and a window-side setup (calm look, first-click fullscreen). Separate from the Chromecast kit.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web": "./web/index.ts",
+    "./web/wired": "./web/wired.ts",
+    "./web/WiredTvButton": "./web/WiredTvButton.tsx"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "author": "Tanner Nelson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gizmo564/party-kits.git",
+    "directory": "packages/tv-out"
+  }
+}
