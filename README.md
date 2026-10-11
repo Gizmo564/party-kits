@@ -11,6 +11,7 @@ The reusable pieces of the 0801564.xyz party games, as npm packages under the `@
 | `room-server` | `BaseRoom`, `GameRoomDO` (Durable Object), Worker routes, protocol types |
 | `room-client` | `useRoom` (websocket, rejoin, reconnect, nap) |
 | `bots-away` | room plugin: bots and away-player takeover |
+| `realtime` | room plugin for real-time games: bots and away players with independent timers |
 | `lobby-ui`, `lobby-host` | avatars, QR, controls; the online lobby and TV lobby, host panel |
 | `host-display` | the TV display shell (scales a fixed design to any window) |
 | `pass-the-phone` | one-device handover cover |

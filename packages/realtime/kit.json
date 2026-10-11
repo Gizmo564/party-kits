@@ -1,0 +1,6 @@
+{
+  "name": "realtime",
+  "description": "For real-time (not turn-based) games: a bots plugin where every bot and every away player has its own timer, so other players' moves never reset or starve them.",
+  "tests": ["server/bots-realtime.test.ts"],
+  "requires": ["room-server", "bots-away"]
+}

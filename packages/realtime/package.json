@@ -1,0 +1,21 @@
+{
+  "name": "@gizmo564/realtime",
+  "version": "0.1.0",
+  "description": "For real-time (not turn-based) games: a bots plugin where every bot and every away player has its own timer, so other players' moves never reset or starve them. The game supplies a plan (action + delay); the plugin supplies timing, lobby bots, away flags and host handoff.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./server/bots-realtime": "./server/bots-realtime.ts",
+    "./server": "./server/index.ts"
+  },
+  "files": ["**/*", "!**/*.test.ts", "!**/*.test.tsx", "!test", "!testing", "!**/testing"],
+  "dependencies": {
+    "@gizmo564/bots-away": "^0.1.0",
+    "@gizmo564/room-server": "^0.1.0"
+  },
+  "peerDependencies": {},
+  "publishConfig": { "access": "public" },
+  "license": "MIT",
+  "author": "Tanner Nelson",
+  "repository": { "type": "git", "url": "git+https://github.com/Gizmo564/party-kits.git", "directory": "packages/realtime" }
+}

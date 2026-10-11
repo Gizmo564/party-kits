@@ -25,6 +25,45 @@ export interface BotsAwayOptions {
   hostHandoff?: boolean;
 }
 
+/** The host-managed `bot` lobby message (add / remove). Shared with the real-time bots plugin. Returns an error string, null when handled, undefined when the message is not a bot message. */
+export function lobbyBotMessage(room: BaseRoom, me: Member, msg: ClientMsg, logic: Pick<GameLogic<any, any, any, any, any>, 'maxPlayers'>, maxBots: number): string | null | undefined {
+  if (msg.type !== 'bot') return undefined;
+  if (!me.host) return 'only the host can change the bots';
+  if (room.started) return 'bots can only be changed in the lobby';
+  if (msg.op === 'add') {
+    const bots = room.members.filter((m) => m.bot).length;
+    if (bots >= maxBots) return `at most ${maxBots} bots`;
+    if (room.players().length >= logic.maxPlayers) return `the room is full (${logic.maxPlayers} players)`;
+    room.addMember({ name: `Bot ${bots + 1}`, bot: true, data: msg.level ? { level: String(msg.level).slice(0, 12) } : {} });
+    return null;
+  }
+  if (msg.op === 'remove') {
+    // no id: remove the newest bot
+    const target = msg.id ? room.member(msg.id) : [...room.members].reverse().find((m) => m.bot);
+    if (!target || !target.bot) return 'no such bot';
+    room.removeMember(target.id);
+    return null;
+  }
+  return 'unknown bot operation';
+}
+
+/** Flags players who have been gone past the grace period as `away`, and hands the host role to someone present. True if anything changed. Shared with the real-time bots plugin. */
+export function flagAwayAndHandoff(room: BaseRoom, now: number, grace: number, handoff: boolean): boolean {
+  let changed = false;
+  for (const m of room.members) {
+    const away = !m.bot && !m.screen && m.role === 'player' && m.conns.size === 0 && now - m.lastSeen >= grace;
+    if (away !== m.away) { m.away = away; changed = true; }
+  }
+  if (handoff) {
+    const h = room.host;
+    if (h && !h.bot && !h.screen && h.role === 'player' && h.conns.size === 0 && now - h.lastSeen >= grace) {
+      const next = room.members.filter((m) => !m.bot && !m.screen && m.conns.size > 0).sort((a, b) => a.lastSeen - b.lastSeen)[0];
+      if (next && room.transferHost(next.id) === null) changed = true;
+    }
+  }
+  return changed;
+}
+
 interface Plan { seq: number; nextAt: Record<string, number> }
 
 export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: BotsAwayOptions = {}): RoomPlugin {
@@ -55,42 +94,10 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
     onStart: () => { plan = { seq: -1, nextAt: {} }; },
     onAgain: () => { plan = { seq: -1, nextAt: {} }; },
 
-    onMessage(room, me, msg: ClientMsg) {
-      if (msg.type !== 'bot') return undefined;
-      if (!me.host) return 'only the host can change the bots';
-      if (room.started) return 'bots can only be changed in the lobby';
-      if (msg.op === 'add') {
-        const bots = room.members.filter((m) => m.bot).length;
-        if (bots >= maxBots) return `at most ${maxBots} bots`;
-        if (room.players().length >= logic.maxPlayers) return `the room is full (${logic.maxPlayers} players)`;
-        room.addMember({ name: `Bot ${bots + 1}`, bot: true, data: msg.level ? { level: String(msg.level).slice(0, 12) } : {} });
-        return null;
-      }
-      if (msg.op === 'remove') {
-        // no id: remove the newest bot
-        const target = msg.id ? room.member(msg.id) : [...room.members].reverse().find((m) => m.bot);
-        if (!target || !target.bot) return 'no such bot';
-        room.removeMember(target.id);
-        return null;
-      }
-      return 'unknown bot operation';
-    },
+    onMessage: (room, me, msg: ClientMsg) => lobbyBotMessage(room, me, msg, logic, maxBots),
 
     tick(room, now) {
-      let changed = false;
-      // away flag: shown to everyone so the table knows a bot is covering
-      for (const m of room.members) {
-        const away = !m.bot && isAwayHuman(m) && now - m.lastSeen >= grace;
-        if (away !== m.away) { m.away = away; changed = true; }
-      }
-      // the host walked off: hand the room to someone who is here
-      if (handoff) {
-        const h = room.host;
-        if (h && isAwayHuman(h) && now - h.lastSeen >= grace) {
-          const next = room.members.filter((m) => !m.bot && !m.screen && m.conns.size > 0).sort((a, b) => a.lastSeen - b.lastSeen)[0];
-          if (next && room.transferHost(next.id) === null) changed = true;
-        }
-      }
+      const changed = flagAwayAndHandoff(room, now, grace, handoff);
       if (!room.started || room.over) return changed;
       ensure(room, now);
       for (const m of room.members) {
