@@ -3,7 +3,22 @@
   "version": "0.1.0",
   "description": "Make a new 0801564.xyz party game: npm create @gizmo564/game \"Lucky Draw\"  (or npx @gizmo564/create-game ...)",
   "type": "module",
-  "bin": { "create-game": "./create-game.mjs" },
-  "files": ["create-game.mjs", "template", "README.md"],
-  "publishConfig": { "access": "public" }
+  "bin": {
+    "create-game": "./create-game.mjs"
+  },
+  "files": [
+    "create-game.mjs",
+    "template",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "author": "Tanner Nelson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gizmo564/party-kits.git",
+    "directory": "packages/create-game"
+  }
 }

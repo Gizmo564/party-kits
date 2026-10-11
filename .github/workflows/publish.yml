@@ -1,13 +1,9 @@
 # NOT RUN YET (untested). Needs an npm automation token saved as the repository secret NPM_TOKEN, and the @gizmo564 scope to exist on npm.
 name: publish
 on:
-  workflow_run:
-    workflows: [ci]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:   # manual only: nothing is published until Tanner presses Run workflow
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions: { contents: read, id-token: write }
     steps:

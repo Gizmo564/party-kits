@@ -35,5 +35,12 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "license": "MIT",
+  "author": "Tanner Nelson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gizmo564/party-kits.git",
+    "directory": "packages/themes"
   }
 }
