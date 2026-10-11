@@ -34,6 +34,8 @@ export interface RoomConfig {
 }
 
 export const IDLE_DEFAULT_MS = 30 * 60_000;
+/** a room with no phone connected for this long is closed (a TV alone does not keep it open) */
+export const EMPTY_CLOSE_MS = 3 * 60_000;
 const ACT_SAVE_EVERY = 60_000; // persist the activity clock at most once a minute
 const MAX_MESSAGE = 20_000;
 
@@ -66,7 +68,7 @@ export abstract class GameRoomDO<E extends RoomEnv = RoomEnv> implements Durable
     return this.lastAct;
   }
   /** Tell everyone, close the sockets, wipe the room so the code can be used again. */
-  private async closeIdle(reason: 'idle' | 'admin' = 'idle') {
+  private async closeIdle(reason: 'idle' | 'admin' | 'host' = 'idle') {
     for (const w of this.ctx.getWebSockets()) {
       try { w.send(JSON.stringify({ type: 'closed', reason } satisfies ServerMsg)); w.close(1000, reason); } catch { /* already gone */ }
     }
@@ -191,6 +193,7 @@ export abstract class GameRoomDO<E extends RoomEnv = RoomEnv> implements Durable
       if (room.members.length > before.members && last && !last.screen) this.report('player_joined', { n: room.members.filter((m) => !m.bot && !m.screen).length });
     }
     if (!before.over && room.over) this.report('round_finished');
+    if (!err && room.endRequested) { await this.closeIdle('host'); return; }
     if (err) {
       // a refused message changes nothing, so only the sender hears about it
       try { ws.send(JSON.stringify({ type: 'error', message: err } satisfies ServerMsg)); } catch { /* gone */ }
@@ -207,8 +210,19 @@ export abstract class GameRoomDO<E extends RoomEnv = RoomEnv> implements Durable
     const att = ws.deserializeAttachment() as Attach | null;
     if (!room || !att) return;
     room.disconnect(att.conn);
+    await this.noteEmpty(room);
     await this.save(room); // a plugin may have started a grace timer
     this.broadcast(room);
+  }
+
+  /** When the last phone drops, let the idle clock close the room in a few minutes instead of half an hour. */
+  private async noteEmpty(room: BaseRoom) {
+    if (room.members.some((m) => !m.screen && !m.bot && m.conns.size > 0)) return;
+    const now = Date.now();
+    const idle = idleMs(this.env);
+    this.lastAct = Math.min(await this.lastActivity(), now - idle + Math.min(EMPTY_CLOSE_MS, idle));
+    this.actSaved = 0;
+    await this.ctx.storage.put('lastAct', this.lastAct);
   }
 
   async alarm() {

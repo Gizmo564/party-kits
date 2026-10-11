@@ -227,6 +227,13 @@ describe('playing', () => {
     expect(JSON.stringify(snap(r, 'c1').view)).toContain('secret-');
     expect(JSON.stringify(snap(r, 'tv').view)).not.toContain('secret-');
   });
+  it('end: only the host, and it asks the Durable Object to close the room', () => {
+    const r = lobby();
+    expect(r.handle('c2', { type: 'end' } as Msg)).toMatch(/only the host/);
+    expect(r.endRequested).toBe(false);
+    expect(r.handle('c1', { type: 'end' } as Msg)).toBeNull();
+    expect(r.endRequested).toBe(true);
+  });
   it('again mid-game abandons the game only when the logic says it is abandonable', () => {
     const r = lobby();
     r.handle('c1', { type: 'start' } as Msg);

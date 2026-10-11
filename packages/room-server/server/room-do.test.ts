@@ -168,6 +168,41 @@ describe('alarms', () => {
   });
 });
 
+describe('ending a room', () => {
+  it('the host ends it for everyone: sockets are told, storage is wiped (the code is free again); others cannot', async () => {
+    const { f, d } = await created();
+    const a = connect(f, 1), b = connect(f, 2);
+    await send(d, a, { type: 'hello', name: 'Ann' }); await send(d, b, { type: 'hello', name: 'Bo' });
+    await send(d, b, { type: 'end' });
+    expect(b.last('error').message).toMatch(/only the host/);
+    expect(f.data.size).toBeGreaterThan(0);
+    await send(d, a, { type: 'end' });
+    expect(a.last('closed').reason).toBe('host'); expect(b.last('closed').reason).toBe('host');
+    expect(f.data.size).toBe(0);
+  });
+  it('when the last phone leaves the room closes after a few minutes, not half an hour (a TV alone does not count)', async () => {
+    vi.useFakeTimers(); vi.setSystemTime(3_000_000);
+    const { f, d } = await created({ IDLE_MS: String(30 * 60_000) });
+    const tv = connect(f, 1), p = connect(f, 2);
+    await send(d, tv, { type: 'hello', screen: true }); await send(d, p, { type: 'hello', name: 'Ann' });
+    await d.webSocketClose(p as unknown as WebSocket);
+    const wake = f.alarm()!;
+    expect(wake - 3_000_000).toBeLessThanOrEqual(3 * 60_000 + 1500);
+    vi.setSystemTime(wake + 10);
+    await d.alarm();
+    expect(tv.last('closed').reason).toBe('idle');
+    expect(f.data.size).toBe(0);
+  });
+  it('a room with a phone still connected stays open', async () => {
+    vi.useFakeTimers(); vi.setSystemTime(4_000_000);
+    const { f, d } = await created({ IDLE_MS: String(30 * 60_000) });
+    const p = connect(f, 1), q = connect(f, 2);
+    await send(d, p, { type: 'hello', name: 'Ann' }); await send(d, q, { type: 'hello', name: 'Bo' });
+    await d.webSocketClose(p as unknown as WebSocket);
+    expect(f.alarm()! - 4_000_000).toBeGreaterThan(20 * 60_000);
+  });
+});
+
 describe('nap guard', () => {
   const guard = (level: string, resetAt = 0) => fetchSpy.mockImplementation(async (u: any) => (String(u).includes('/nap') ? new Response(JSON.stringify({ level, percent: 99, resetAt })) : (() => { throw new Error('offline'); })()));
   it('asleep: the message is refused with a nap notice and the room freezes; waking pushes game time forward', async () => {

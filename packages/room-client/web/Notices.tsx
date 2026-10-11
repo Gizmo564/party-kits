@@ -1,10 +1,11 @@
 import type { NetStatus } from './useRoom';
 
 /** Shown instead of the game when the room cannot be reached or is over. Plain words, one way out. */
-export function RoomGone({ status, reason, onLeave }: { status: NetStatus; reason?: 'idle' | 'admin' | 'kicked' | null; onLeave: () => void }) {
+export function RoomGone({ status, reason, onLeave }: { status: NetStatus; reason?: 'idle' | 'admin' | 'kicked' | 'host' | null; onLeave: () => void }) {
   const text =
     status === 'missing' ? 'That room is not here any more. It may have closed after sitting idle, or the code was typed wrong.'
     : reason === 'kicked' ? 'The host removed you from this room.'
+    : reason === 'host' ? 'The host ended the game.'
     : reason === 'admin' ? 'This room was closed.'
     : 'This room closed after being idle for a while.';
   return (

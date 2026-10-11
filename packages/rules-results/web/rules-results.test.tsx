@@ -93,3 +93,15 @@ describe('Credits', () => {
   });
 });
 
+describe('ResultsScreen: end game for everyone', () => {
+  const rows = [{ id: 'a', name: 'Ann', color: '#fff', score: 1 }];
+  it('shows to the host only, and only when onEnd is given', () => {
+    const end = vi.fn();
+    const { rerender } = render(<ResultsScreen rows={rows} isHost onAgain={() => undefined} onLeave={() => undefined} onEnd={end} />);
+    fireEvent.click(screen.getByTestId('end-all')); expect(end).toHaveBeenCalled();
+    rerender(<ResultsScreen rows={rows} isHost={false} onAgain={() => undefined} onLeave={() => undefined} onEnd={end} />);
+    expect(screen.queryByTestId('end-all')).toBeNull();
+    rerender(<ResultsScreen rows={rows} isHost onAgain={() => undefined} onLeave={() => undefined} />);
+    expect(screen.queryByTestId('end-all')).toBeNull();
+  });
+});

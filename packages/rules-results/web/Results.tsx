@@ -40,8 +40,10 @@ export function Scoreboard({ rows, lowWins = false, meId, unit = '' }: { rows: r
 }
 
 /** The end-of-game screen: headline, ranked scores, and Play again (host) / waiting (everyone else). */
-export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, headline, children, credits }: {
+export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, onEnd, headline, children, credits }: {
   rows: readonly ResultRow[]; lowWins?: boolean; meId?: string; isHost: boolean; onAgain: () => void; onLeave: () => void; headline?: string; children?: ReactNode;
+  /** host only: close the room for everyone and free its code (send { type: 'end' }). Shown under the credits. */
+  onEnd?: () => void;
   /** a <Credits/> panel: shown on the game-over screen in all three live games */
   credits?: ReactNode;
 }) {
@@ -58,6 +60,7 @@ export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, h
         {isHost ? <button className="btn accent big grow" onClick={onAgain}>Play again</button> : <p className="muted grow center-text">Waiting for the host to start another game…</p>}
         <button className="btn" onClick={onLeave}>Leave</button>
       </div>
+      {isHost && onEnd ? <button className="btn small danger" onClick={onEnd} data-testid="end-all">End game for everyone</button> : null}
     </div>
   );
 }

@@ -27,6 +27,8 @@ export type ClientMsg<Action = unknown, Settings = unknown> =
   | { type: 'settings'; settings: Partial<Settings> }
   | { type: 'profile'; name?: string; color?: string; avatar?: number; data?: Record<string, unknown> }
   | { type: 'start' }
+  /** the host closes the room for everyone (the code is freed for another game) */
+  | { type: 'end' }
   /** after a finished game: the host sends everyone back to the lobby, same room and players */
   | { type: 'again' }
   | { type: 'act'; action: Action }
@@ -66,4 +68,4 @@ export type ServerMsg<Settings = unknown, View = unknown> =
   | { type: 'error'; message: string }
   | { type: 'pong' }
   | { type: 'nap'; resetAt: number }
-  | { type: 'closed'; reason: 'idle' | 'admin' | 'kicked' };
+  | { type: 'closed'; reason: 'idle' | 'admin' | 'kicked' | 'host' };

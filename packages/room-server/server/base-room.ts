@@ -62,6 +62,8 @@ const stripConns = (m: Member) => ({ ...m, conns: [] as string[] });
 
 export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev = unknown> {
   code: string;
+  /** set when the host sends `end`; the Durable Object then closes the room for everyone and frees the code */
+  endRequested = false;
   settings: Settings;
   game: State | null = null;
   events: unknown[] = [];
@@ -174,6 +176,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
       case 'claimHost': return this.claimHost(me);
       case 'leave': return this.leave(me);
       case 'start': return this.start(me, now);
+      case 'end': if (!me.host) return 'only the host can end the game'; this.endRequested = true; return null;
       case 'again': return this.again(me, now);
       case 'music': return this.setMusic(me, msg.on);
       case 'act': return this.act(me, msg.action, now);

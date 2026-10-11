@@ -39,7 +39,7 @@ export function useRoom<Settings = unknown, View = unknown, Action = unknown>(cf
   const [status, setStatus] = useState<NetStatus>('connecting');
   const [error, setError] = useState('');
   const [napUntil, setNapUntil] = useState<number | null>(null);
-  const [endedReason, setEndedReason] = useState<'idle' | 'admin' | 'kicked' | null>(null);
+  const [endedReason, setEndedReason] = useState<'idle' | 'admin' | 'kicked' | 'host' | null>(null);
   const wsRef = useRef<SocketLike | null>(null);
   const cfgRef = useRef(cfg);
   cfgRef.current = cfg;

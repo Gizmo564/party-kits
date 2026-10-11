@@ -72,7 +72,7 @@ export function Online({ code, role, name, onLeave }: { code: string; role: 'pla
   // ---- results ----
   if (snap.over) {
     const rows = snap.members.filter((m) => m.role === 'player' && !m.screen).map((m) => ({ id: m.id, name: m.name, color: m.color, avatar: m.avatar, score: v.scores[m.id] ?? 0 }));
-    return <>{banners}<ResultsScreen rows={rows} meId={snap.you.id} isHost={snap.you.host} onAgain={() => send({ type: 'again' })} onLeave={leave} credits={<GameCredits />} />{error ? <p className="err" role="alert">{error}</p> : null}</>;
+    return <>{banners}<ResultsScreen rows={rows} meId={snap.you.id} isHost={snap.you.host} onAgain={() => send({ type: 'again' })} onLeave={leave} onEnd={() => send({ type: 'end' })} credits={<GameCredits />} />{error ? <p className="err" role="alert">{error}</p> : null}</>;
   }
 
   const table = <Table view={v} members={snap.members} meId={snap.you.id} total={snap.settings.pickSeconds * 1000} />;
