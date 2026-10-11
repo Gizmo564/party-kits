@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/themes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared design tokens, house mechanics (press-in buttons, panels, chips, modals...) and nine switchable themes.",
   "type": "module",
   "exports": {
