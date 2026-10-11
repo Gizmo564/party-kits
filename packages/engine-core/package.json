@@ -1,7 +1,7 @@
 {
   "name": "@gizmo564/engine-core",
   "version": "0.1.0",
-  "description": "Pure helpers every engine shares: seeded Rng/forkRng, Result/Status, text cleaning (cleanName, clampInt), ids and tokens, player palette, per-viewer view helpers, and vitest contract helpers (determinism, JSON-safe, no-leak).",
+  "description": "Pure helpers every engine shares: seeded Rng/forkRng, Result/Status, text cleaning (cleanName, clampInt), ids and tokens, player palette, teams (cleanTeamProfile, assignTeams, groupByTeam), per-viewer view helpers, and vitest contract helpers (determinism, JSON-safe, no-leak).",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -11,6 +11,7 @@
     "./engine/palette": "./engine/palette.ts",
     "./engine/result": "./engine/result.ts",
     "./engine/rng": "./engine/rng.ts",
+    "./engine/teams": "./engine/teams.ts",
     "./engine/text": "./engine/text.ts",
     "./engine/view": "./engine/view.ts"
   },

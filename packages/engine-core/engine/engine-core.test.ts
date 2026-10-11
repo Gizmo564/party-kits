@@ -90,3 +90,26 @@ describe('views + contract helpers', () => {
     expectDeterministic((seed) => { const r = new Rng(seed); return [r.next(), r.next()]; });
   });
 });
+
+import { assignTeams, cleanTeamProfile, groupByTeam, isTeam, teamOf } from './teams';
+describe('teams', () => {
+  it('validates team numbers', () => {
+    expect(isTeam(0, 2)).toBe(true); expect(isTeam(1, 2)).toBe(true);
+    expect(isTeam(2, 2)).toBe(false); expect(isTeam(-1, 2)).toBe(false); expect(isTeam(0.5, 2)).toBe(false); expect(isTeam('1', 2)).toBe(false);
+  });
+  it('cleanTeamProfile keeps other keys, rejects bad teams, ignores a patch without a team', () => {
+    expect(cleanTeamProfile({ x: 1 }, { team: 1 }, 2)).toEqual({ x: 1, team: 1 });
+    expect(cleanTeamProfile({ x: 1 }, {}, 2)).toEqual({ x: 1 });
+    expect(cleanTeamProfile({}, { team: 5 }, 2)).toMatch(/team/);
+  });
+  it('teamOf falls back when nothing valid is chosen', () => {
+    expect(teamOf({ team: 1 }, 0)).toBe(1); expect(teamOf({}, 1)).toBe(1); expect(teamOf(undefined, 0)).toBe(0); expect(teamOf({ team: 99 }, 0)).toBe(0);
+  });
+  it('assignTeams spreads unchosen seats round-robin and keeps chosen teams', () => {
+    expect(assignTeams([{ id: 'a' }, { id: 'b' }, { id: 'c' }])).toEqual({ a: 0, b: 1, c: 0 });
+    expect(assignTeams([{ id: 'a', data: { team: 1 } }, { id: 'b' }])).toEqual({ a: 1, b: 1 });
+  });
+  it('groupByTeam sorts teams and leaves out empty ones', () => {
+    expect(groupByTeam({ a: 2, b: 0, c: 2 })).toEqual([{ team: 0, ids: ['b'] }, { team: 2, ids: ['a', 'c'] }]);
+  });
+});

@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { Avatar, AvatarFace, Choice, CodePanel, ColorPicker, LOOK_COUNT, Modal, PlayerList, ProfileEditor, Stepper, ToastProvider, Toggle, TurnTimer, fitGrid, lookFromName, lookParts, useToast, FullscreenButton } from './index';
+import { Avatar, AvatarFace, Choice, CodePanel, ColorPicker, LOOK_COUNT, Modal, PlayerList, ProfileEditor, Stepper, ToastProvider, Toggle, TurnTimer, fitGrid, lookFromName, lookParts, useToast, FullscreenButton, TeamChip, TeamPicker } from './index';
 import { PLAYER_COLORS } from '@gizmo564/engine-core/engine';
 import type { MemberInfo } from '@gizmo564/room-server/server/protocol';
 
@@ -149,5 +149,21 @@ describe('FullscreenButton', () => {
     Object.defineProperty(document, 'fullscreenEnabled', { value: true, configurable: true });
     render(<FullscreenButton />);
     expect(screen.getByTestId('fullscreen').textContent).toBe('Full screen');
+  });
+});
+
+describe('teams', () => {
+  afterEach(cleanup);
+  it('TeamPicker marks the current team and reports a pick', () => {
+    const onPick = vi.fn();
+    render(<TeamPicker value={0} teamCount={3} onPick={onPick} />);
+    expect(screen.getAllByRole('radio')).toHaveLength(3);
+    expect(screen.getByRole('radio', { name: 'Team A' }).getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(screen.getByRole('radio', { name: 'Team C' }));
+    expect(onPick).toHaveBeenCalledWith(2);
+  });
+  it('TeamChip shows the team name', () => {
+    render(<TeamChip team={1} />);
+    expect(screen.getByTestId('team-chip').textContent).toBe('Team B');
   });
 });

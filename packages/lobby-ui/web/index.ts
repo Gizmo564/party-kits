@@ -6,3 +6,4 @@ export * from './lobby-parts';
 export * from './Qr';
 export * from './toasts';
 export * from './TurnTimer';
+export * from './teams';

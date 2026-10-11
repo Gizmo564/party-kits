@@ -1,7 +1,7 @@
 {
   "name": "@gizmo564/lobby-ui",
   "version": "0.1.0",
-  "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
+  "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TeamPicker, TeamChip, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -13,6 +13,7 @@
     "./web/fit": "./web/fit.ts",
     "./web": "./web/index.ts",
     "./web/lobby-parts": "./web/lobby-parts.tsx",
+    "./web/teams": "./web/teams.tsx",
     "./web/toasts": "./web/toasts.tsx"
   },
   "files": [
@@ -24,6 +25,7 @@
     "!**/testing"
   ],
   "dependencies": {
+    "@gizmo564/engine-core": "^0.1.0",
     "@gizmo564/room-server": "^0.1.0",
     "@types/qrcode": "^1.5.6",
     "qrcode": "^1.5.4"

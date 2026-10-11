@@ -1,13 +1,13 @@
 {
   "name": "lobby-ui",
-  "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
+  "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TeamPicker, TeamChip, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
   "tests": [
     "web/lobby-ui.test.tsx"
   ],
   "requires": [
     "themes (base.css classes)",
     "room-server (MemberInfo type)",
-    "engine-core (PLAYER_COLORS)"
+    "engine-core (PLAYER_COLORS, TEAM_COLORS)"
   ],
   "notes": [
     "Pass LOOK_COUNT as GameLogic.avatarLooks so the server accepts every look the picker offers."

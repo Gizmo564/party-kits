@@ -4,3 +4,4 @@ export * from './text';
 export * from './ids';
 export * from './palette';
 export * from './view';
+export * from './teams';
