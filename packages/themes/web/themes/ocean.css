@@ -1,0 +1,11 @@
+/* ocean: pale sea + blue, orange second accent. From Tank Tactics.
+   Kit change: --accent (#2596be), --good (#2f9e6b), --bad (#e0553f) and --ink-soft (#4d7889) adjusted to pass WCAG AA. */
+html[data-theme="ocean"] {
+  --bg: #e8f2f5; --bg-2: #d8e9ee; --surface: #fbfeff; --surface-2: #d8e9ee;
+  --ink: #173441; --ink-soft: #44707f; --line: #173441; --edge: #b5d3dc;
+  --accent: #1f7fa1; --accent-ink: #ffffff; --accent-2: #f2a154; --accent-2-ink: #173441;
+  --good: #27855a; --bad: #ca4c39; --warn: #f2a154; --focus: #173441;
+  --good-ink: #ffffff; --bad-ink: #ffffff; --bad-text: #b3321f; --link: #17708f;
+  --shadow-color: rgba(23, 52, 65, 0.9); --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: light;
+}

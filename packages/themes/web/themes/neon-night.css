@@ -1,0 +1,12 @@
+/* neon-night: deep indigo + neon. From Track Record. Outline is near-black (--line) with a violet --edge divider. */
+html[data-theme="neon-night"] {
+  --bg: #0b0820; --bg-2: #120d33; --surface: #17123f; --surface-2: #231b66;
+  --ink: #f6f3ff; --ink-soft: #a9a2d6; --line: #05030f; --edge: #5b4fd6;
+  --accent: #ff3df2; --accent-ink: #05030f; --accent-2: #2ff3ff; --accent-2-ink: #05030f;
+  --good: #3dffa0; --bad: #ff4d6d; --warn: #ffe83d; --focus: #ffe83d;
+  --good-ink: #05030f; --bad-ink: #05030f; --bad-text: #ff7a93; --link: #2ff3ff;
+  --shadow-color: #05030f; --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --page-bg: radial-gradient(900px 500px at 15% -10%, #3a1d8f55, transparent), radial-gradient(800px 500px at 100% 110%, #00b7d433, transparent), #0b0820;
+  --font-display: 'Fredoka', system-ui, sans-serif; --font-body: 'Inter', system-ui, sans-serif;
+  --color-scheme: dark;
+}

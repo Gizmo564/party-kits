@@ -1,0 +1,26 @@
+/*
+ * THE TOKEN VOCABULARY. Every theme sets exactly these names; base.css and every kit component read only these.
+ * The values below are the fallback (identical to the "sunrise" theme), so an unthemed page still renders sanely.
+ *
+ * REQUIRED (a theme must set all of them; theme.test.ts enforces it):
+ *   surfaces   --bg --bg-2 --surface --surface-2
+ *   text       --ink --ink-soft
+ *   outlines   --line (outline colour)  --edge (subtle divider)  --border (outline width)
+ *   brand      --accent --accent-ink (text ON accent)  --accent-2 --accent-2-ink
+ *   status     --good --bad --warn --focus
+ *   shape      --radius --radius-lg --radius-pill
+ *   depth      --shadow (full box-shadow)  --shadow-sm  --shadow-color (colour only)  --press (px a pressed button moves)
+ *   type       --font-display --font-body
+ * OPTIONAL (base.css has a fallback): --page-bg (gradient) --color-scheme --field-bg --link
+ *   --good-ink --bad-ink --bad-text (error text on the page) --avatar-ink
+ */
+:root {
+  --bg: #faf3e6; --bg-2: #f2e8d5; --surface: #fffdf8; --surface-2: #f2e8d5;
+  --ink: #2b2620; --ink-soft: #6b6255; --line: #2b2620; --edge: #d9cdb4; --border: 3px;
+  --accent: #ff6b4a; --accent-ink: #2b2620; --accent-2: #ffb84a; --accent-2-ink: #2b2620;
+  --good: #348459; --bad: #ca4c39; --warn: #ffb84a; --focus: #2b2620;
+  --radius: 14px; --radius-lg: 22px; --radius-pill: 999px;
+  --shadow-color: rgba(43, 38, 32, 0.9);
+  --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color); --press: 4px;
+  --font-display: 'Fredoka', system-ui, sans-serif; --font-body: 'Nunito', system-ui, sans-serif;
+}

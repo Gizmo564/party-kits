@@ -1,0 +1,33 @@
+{
+  "name": "@gizmo564/lobby-host",
+  "version": "0.1.0",
+  "description": "The online lobby assembled from the kit: LobbyScreen (code/QR, take-control, players with kick/make-host, bots, profile, settings, Start with a reason) and a schema-driven SettingsForm.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/HostPanel": "./web/HostPanel.tsx",
+    "./web/LobbyScreen": "./web/LobbyScreen.tsx",
+    "./web/SettingsForm": "./web/SettingsForm.tsx",
+    "./web": "./web/index.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/engine-core": "^0.1.0",
+    "@gizmo564/lobby-ui": "^0.1.0",
+    "@gizmo564/room-server": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

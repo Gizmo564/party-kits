@@ -1,0 +1,11 @@
+/* lavender-night: the dark mode of lavender. From the landing page and play.0801564.xyz. */
+html[data-theme="lavender-night"] {
+  --bg: #2a2038; --bg-2: #3a2d4d; --surface: #3a2d4d; --surface-2: #2a2038;
+  --ink: #fff3e6; --ink-soft: #d8c9ea; --line: #e9ddf7; --edge: #54456b;
+  --accent: #d9ccff; --accent-ink: #3d2b4f; --accent-2: #ffd3b6; --accent-2-ink: #3d2b4f;
+  --good: #8fd4a8; --bad: #ff9db8; --warn: #ffefa8; --focus: #ffefa8;
+  --good-ink: #3d2b4f; --bad-ink: #3d2b4f; --bad-text: #ff9db8; --link: #d8b8ff;
+  --shadow-color: #120d1a; --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --field-bg: #2a2038;
+  --color-scheme: dark;
+}

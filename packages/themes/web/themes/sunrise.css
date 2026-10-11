@@ -1,0 +1,11 @@
+/* sunrise: warm cream + coral. From Tank Tactics (default) and Sandwich Slam.
+   Kit change: --good (#3f9e6b) and --bad (#e0553f) darkened so white text on them passes WCAG AA. */
+html[data-theme="sunrise"] {
+  --bg: #faf3e6; --bg-2: #f2e8d5; --surface: #fffdf8; --surface-2: #f2e8d5;
+  --ink: #2b2620; --ink-soft: #6b6255; --line: #2b2620; --edge: #d9cdb4;
+  --accent: #ff6b4a; --accent-ink: #2b2620; --accent-2: #ffb84a; --accent-2-ink: #2b2620;
+  --good: #348459; --bad: #ca4c39; --warn: #ffb84a; --focus: #2b2620;
+  --good-ink: #ffffff; --bad-ink: #ffffff; --bad-text: #b3321f; --link: #b3321f;
+  --shadow-color: rgba(43, 38, 32, 0.9); --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: light;
+}

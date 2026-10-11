@@ -1,0 +1,15 @@
+{
+  "name": "room-client",
+  "description": "Browser side of a room: useRoom (websocket, rejoin token, reconnect, nap, closed), createRoom/roomInfo, join-link parsing, per-game storage, and the Room closed / reconnecting / nap notices.",
+  "tests": [
+    "web/room-client.test.tsx"
+  ],
+  "requires": [
+    "room-server (protocol types)",
+    "join-codes (roster)",
+    "themes (.banner, .panel, .btn)"
+  ],
+  "backends": [
+    "room-server Worker routes /api/rooms, /api/rooms/CODE, /ws/CODE, /api/nap"
+  ]
+}

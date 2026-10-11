@@ -1,0 +1,15 @@
+{
+  "name": "cast",
+  "description": "Google Cast: the sender (host's Chrome 'Show on TV' button + caster) and the receiver-side resolveLoad rule (only a live game with a valid code can be opened on the TV). Matches the sender in Track Record, Sandwich Slam and Chameleon (identical in all three). This is the successor to game-kit/cast (removed).",
+  "tests": [
+    "web/cast.test.ts"
+  ],
+  "requires": [
+    "join-codes"
+  ],
+  "notes": [
+    "See README.md for the rules every game follows (button on host device and host screen, hidden on the receiver, casting TV outranks other screens for the music, TV needs no tap).",
+    "The receiver app itself is cast/src/receiver.ts at the site root; it imports ../../kits/cast/web/cast and ../../kits/join-codes/engine/*.",
+    "CAST_APP_ID in sender.ts is the registered Custom Receiver; an empty id hides the button."
+  ]
+}

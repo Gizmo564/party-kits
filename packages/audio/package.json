@@ -1,0 +1,30 @@
+{
+  "name": "@gizmo564/audio",
+  "version": "0.1.0",
+  "description": "One audio system: synth effects (with recordings overriding), looping music tracks, one-shot stings with chaining, per-game mute, music-device output switch, clip ducking, auto-unlock on first tap.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/audio": "./web/audio.ts",
+    "./web/ctx": "./web/ctx.ts",
+    "./web": "./web/index.ts",
+    "./web/react": "./web/react.tsx",
+    "./web/recipes": "./web/recipes.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {},
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,5 @@
+# Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
+# The same value as on the landing Worker; without it "End all party games" refuses.
+ADMIN_KEY=dev-only-change-me
+# Point at a local guard if you run one; otherwise the live guard is called (and fails open if unreachable).
+# NAP_URL=http://127.0.0.1:8788/api/nap

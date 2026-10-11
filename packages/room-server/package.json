@@ -1,0 +1,31 @@
+{
+  "name": "@gizmo564/room-server",
+  "version": "0.1.0",
+  "description": "Generic multi-device room: BaseRoom (members, rejoin, host, screens, settings, start/again, timers, per-viewer views), GameRoomDO (hibernation, idle close, nap freeze, stats), and the Worker routes. Also ships a tiny toy GameLogic for other packages' tests (server/testing/toy-logic).",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./server/base-room": "./server/base-room.ts",
+    "./server/game-logic": "./server/game-logic.ts",
+    "./server": "./server/index.ts",
+    "./server/protocol": "./server/protocol.ts",
+    "./server/room-do": "./server/room-do.ts",
+    "./server/routes": "./server/routes.ts",
+    "./server/testing/toy-logic": "./server/testing/toy-logic.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test"
+  ],
+  "dependencies": {
+    "@gizmo564/engine-core": "^0.1.0",
+    "@gizmo564/join-codes": "^0.1.0",
+    "@gizmo564/platform": "^0.1.0"
+  },
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

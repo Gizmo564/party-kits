@@ -1,0 +1,44 @@
+{
+  "checksum": true,
+  "games": [
+    {
+      "id": "track-record",
+      "name": "Track Record",
+      "letters": "ABCDEFGH",
+      "origin": "https://tracks.0801564.xyz",
+      "roles": [
+        "player",
+        "display",
+        "audience"
+      ],
+      "status": "live",
+      "joinPath": "/?room={code}"
+    },
+    {
+      "id": "sandwich-slam",
+      "name": "Sandwich Slam",
+      "letters": "JKMNPQRS",
+      "origin": "https://sandwiches.0801564.xyz",
+      "roles": [
+        "player",
+        "display",
+        "audience"
+      ],
+      "status": "live",
+      "joinPath": "/?room={code}"
+    },
+    {
+      "id": "chameleon",
+      "name": "Chameleon",
+      "letters": "LTUVWXYZ",
+      "origin": "https://chameleon.0801564.xyz",
+      "roles": [
+        "player",
+        "display",
+        "audience"
+      ],
+      "status": "live",
+      "joinPath": "/?room={code}"
+    }
+  ]
+}

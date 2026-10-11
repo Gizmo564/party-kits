@@ -1,0 +1,11 @@
+{
+  "name": "rules-results",
+  "description": "First-run Tutorial (steps as data, remembered per game), RulesModal/RulesButton, ranked Scoreboard with ties, the end-of-game ResultsScreen (Play again for host), and the Credits panel shown on game-over screens.",
+  "tests": [
+    "web/rules-results.test.tsx"
+  ],
+  "requires": [
+    "lobby-ui (Modal, Avatar)",
+    "themes"
+  ]
+}

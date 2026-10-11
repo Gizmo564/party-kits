@@ -1,0 +1,11 @@
+{
+  "name": "themes",
+  "description": "Shared design tokens, house mechanics (press-in buttons, panels, chips, modals...) and nine switchable themes.",
+  "tests": [
+    "web/theme.test.tsx"
+  ],
+  "requires": [],
+  "docs": [
+    "HOW_TO_ADD_A_THEME.md"
+  ]
+}

@@ -1,0 +1,11 @@
+/* blush: pale rose + raspberry. From Tank Tactics.
+   Kit change: --accent (#e0507e), --good (#3f9e6b) and --ink-soft (#8a6478) adjusted to pass WCAG AA. */
+html[data-theme="blush"] {
+  --bg: #faeef2; --bg-2: #f5dde6; --surface: #fffbfc; --surface-2: #f5dde6;
+  --ink: #3a2430; --ink-soft: #7f5a6e; --line: #3a2430; --edge: #e6c3d1;
+  --accent: #c84770; --accent-ink: #ffffff; --accent-2: #f2b84a; --accent-2-ink: #3a2430;
+  --good: #348459; --bad: #c0453f; --warn: #f2b84a; --focus: #3a2430;
+  --good-ink: #ffffff; --bad-ink: #ffffff; --bad-text: #a8362f; --link: #b83863;
+  --shadow-color: rgba(58, 36, 48, 0.9); --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: light;
+}

@@ -1,0 +1,11 @@
+# Cloudflare static-asset headers. Copy to packages/web/public/_headers.
+# Today only landing, play and cast ship security headers; the games do not (see FLAGS.md). This is landing's policy
+# with what a game needs added: its own WebSocket, Google Fonts, the shared sign-in lookup and the stats beacon.
+# UNTESTED in a real browser: check the console for blocked requests after the first deploy (Cast receiver framing,
+# audio from blob:, the Cast sender script from gstatic).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://0801564.xyz https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; media-src 'self' blob:; connect-src 'self' wss://*.0801564.xyz https://0801564.xyz; frame-ancestors 'self' https://cast.0801564.xyz; base-uri 'none'; form-action 'self'
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

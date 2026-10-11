@@ -1,0 +1,12 @@
+/* One import for a game: tokens, every theme, then the shared mechanics. Trim the theme imports to ship fewer. */
+@import './tokens.css';
+@import './themes/sunrise.css';
+@import './themes/dusk.css';
+@import './themes/forest.css';
+@import './themes/ocean.css';
+@import './themes/blush.css';
+@import './themes/neon-night.css';
+@import './themes/pastel-pop.css';
+@import './themes/lavender.css';
+@import './themes/lavender-night.css';
+@import './base.css';

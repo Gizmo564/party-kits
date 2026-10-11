@@ -1,0 +1,14 @@
+{
+  "name": "join-codes",
+  "description": "Four-letter room codes: first letter picks the game, letter four is a check letter. Roster (makeRoster) per game, shared manifest.",
+  "tests": [
+    "engine/join-codes.test.ts"
+  ],
+  "requires": [],
+  "docs": [
+    "README.md"
+  ],
+  "notes": [
+    "manifest.json is the source of truth for the shared roster; play and cast build from it (npm run sync); scripts/sync-roster.mjs --check compares play's copy."
+  ]
+}

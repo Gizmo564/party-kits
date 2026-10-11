@@ -1,0 +1,21 @@
+@import '@gizmo564/themes/web/index.css';
+
+/* This game's own styles. Colours come from the theme tokens only, so every theme works. */
+.card-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.play-card { min-width: 64px; min-height: 88px; font-family: var(--font-display); font-weight: 700; font-size: 28px; border: var(--border) solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.play-card:active:not(:disabled) { transform: translate(var(--press), var(--press)); box-shadow: 0 0 0 var(--shadow-color); }
+.play-card:disabled { opacity: .55; box-shadow: none; }
+.play-card.picked { background: var(--accent); color: var(--accent-ink); }
+.play-card.cancelled { text-decoration: line-through; opacity: .6; }
+.prize { font-family: var(--font-display); font-weight: 800; font-size: 56px; line-height: 1; }
+.reveal-grid { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.reveal-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.emoji-btn { font-size: 24px; min-width: 44px; min-height: 44px; }
+.display-table { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 8px 12px; flex: 1; min-height: 0; align-content: center; }
+.display-table > .panel { min-height: 0; overflow: hidden; }
+.display-table .prize { font-size: 84px; }
+.display-table .player-row { min-height: 38px; }
+.table-players { text-align: left; }
+
+.hostpanel > summary { cursor: pointer; font-weight: 700; }
+.hostpanel[open] > summary { margin-bottom: 10px; }

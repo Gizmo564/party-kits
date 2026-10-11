@@ -1,0 +1,15 @@
+{
+  "name": "host-display",
+  "description": "The TV / host-display experience: Stage (scale a fixed design to any window) and DisplayShell (code, QR, fullscreen). The server rules (screen joins as a spectator, claimHost, one music device) live in room-server's BaseRoom.",
+  "tests": [
+    "web/host-display.test.tsx"
+  ],
+  "requires": [
+    "lobby-ui",
+    "room-server",
+    "themes (.stage)"
+  ],
+  "legacy": [
+    "legacy/host-display-firestore (Chameleon's retired Firebase driver)"
+  ]
+}

@@ -1,0 +1,12 @@
+/* pastel-pop: cream + candy pastels, thick outlines, big radii. From Chameleon. */
+html[data-theme="pastel-pop"] {
+  --bg: #fff6e3; --bg-2: #fbecd2; --surface: #ffffff; --surface-2: #fbecd2;
+  --ink: #2b2420; --ink-soft: #5c4a35; --line: #2b2420; --edge: #e8d3a8;
+  --accent: #ff9eb0; --accent-ink: #2b2420; --accent-2: #8fd0ff; --accent-2-ink: #2b2420;
+  --good: #6fe07d; --bad: #ff8a7a; --warn: #ffd977; --focus: #2b2420;
+  --good-ink: #2b2420; --bad-ink: #2b2420; --bad-text: #a8321f; --link: #5c3f9e;
+  --border: 3px; --radius: 20px; --radius-lg: 28px;
+  --shadow-color: #2b2420; --shadow: 5px 5px 0 var(--shadow-color); --shadow-sm: 3px 3px 0 var(--shadow-color); --press: 5px;
+  --font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif; --font-body: 'Nunito', system-ui, sans-serif;
+  --color-scheme: light;
+}

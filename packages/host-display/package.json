@@ -1,0 +1,30 @@
+{
+  "name": "@gizmo564/host-display",
+  "version": "0.1.0",
+  "description": "The TV / host-display experience: Stage (scale a fixed design to any window) and DisplayShell (code, QR, fullscreen). The server rules (screen joins as a spectator, claimHost, one music device) live in room-server's BaseRoom.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/DisplayShell": "./web/DisplayShell.tsx",
+    "./web/Stage": "./web/Stage.tsx",
+    "./web": "./web/index.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/lobby-ui": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

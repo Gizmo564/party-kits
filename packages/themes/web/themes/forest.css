@@ -1,0 +1,11 @@
+/* forest: pale moss + green. From Tank Tactics.
+   Kit change: --accent (#3f8f4f) and --good (#2f9e6b) darkened so white text on them passes WCAG AA. */
+html[data-theme="forest"] {
+  --bg: #eef3e4; --bg-2: #e2ead0; --surface: #fbfdf6; --surface-2: #e2ead0;
+  --ink: #243318; --ink-soft: #5b6b4a; --line: #243318; --edge: #c5d1ad;
+  --accent: #3a8449; --accent-ink: #ffffff; --accent-2: #d9a441; --accent-2-ink: #243318;
+  --good: #27855a; --bad: #c0503a; --warn: #d9a441; --focus: #243318;
+  --good-ink: #ffffff; --bad-ink: #ffffff; --bad-text: #a63c28; --link: #2f7a3e;
+  --shadow-color: rgba(36, 51, 24, 0.9); --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: light;
+}

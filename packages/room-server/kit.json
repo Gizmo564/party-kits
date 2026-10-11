@@ -1,0 +1,23 @@
+{
+  "name": "room-server",
+  "description": "Generic multi-device room: BaseRoom (members, rejoin, host, screens, settings, start/again, timers, per-viewer views), GameRoomDO (hibernation, idle close, nap freeze, stats), and the Worker routes.",
+  "tests": [
+    "server/base-room.test.ts",
+    "server/room-do.test.ts",
+    "server/routes.test.ts"
+  ],
+  "testSupport": [
+    "server/testing/toy-logic.ts"
+  ],
+  "requires": [
+    "engine-core",
+    "join-codes",
+    "platform"
+  ],
+  "backends": [
+    "Cloudflare Worker",
+    "Durable Object (SQLite)",
+    "landing Nap Guard",
+    "landing IndexDO registry"
+  ]
+}

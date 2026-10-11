@@ -1,0 +1,12 @@
+{
+  "name": "engine-core",
+  "description": "Pure helpers every engine shares: seeded Rng/forkRng, Result/Status, text cleaning (cleanName, clampInt), ids and tokens, player palette, per-viewer view helpers, and vitest contract helpers (determinism, JSON-safe, no-leak).",
+  "tests": [
+    "engine/engine-core.test.ts"
+  ],
+  "requires": [],
+  "notes": [
+    "Import it as @game/engine: the generated game's engine package re-exports it.",
+    "engine/contract.ts imports vitest, so it is not in the index; import it directly from tests."
+  ]
+}

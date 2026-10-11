@@ -1,0 +1,31 @@
+{
+  "name": "@gizmo564/pass-the-phone",
+  "version": "0.1.0",
+  "description": "One-device handover: key-based cover gate (PassGate + pass-gate-state), re-cover on hidden tab or idle, and a PassCover screen. Logic adopted from the former game-kit/pass-the-phone (removed).",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/PassCover": "./web/PassCover.tsx",
+    "./web/PassGate": "./web/PassGate.tsx",
+    "./web": "./web/index.ts",
+    "./web/pass-gate-state": "./web/pass-gate-state.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/lobby-ui": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

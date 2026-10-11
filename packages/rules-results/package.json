@@ -1,0 +1,32 @@
+{
+  "name": "@gizmo564/rules-results",
+  "version": "0.1.0",
+  "description": "First-run Tutorial (steps as data, remembered per game), RulesModal/RulesButton, ranked Scoreboard with ties, the end-of-game ResultsScreen (Play again for host), and the Credits panel shown on game-over screens.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/Credits": "./web/Credits.tsx",
+    "./web/Results": "./web/Results.tsx",
+    "./web/Rules": "./web/Rules.tsx",
+    "./web/Tutorial": "./web/Tutorial.tsx",
+    "./web": "./web/index.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/lobby-ui": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

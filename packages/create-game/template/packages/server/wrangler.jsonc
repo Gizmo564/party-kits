@@ -1,0 +1,20 @@
+{
+  // Copied to packages/server/wrangler.jsonc by new-game.mjs. Binding names ROOMS and INDEX are what the kit code expects.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "__SLUG__",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-01",
+  // Lets this Worker call the landing Worker (same domain) over the public internet: the Nap Guard check and the usage counts.
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  // Remove STATS_URL while developing so local runs never count as real games.
+  "vars": { "STATS_URL": "https://0801564.xyz/api/event" },
+  // "routes": [{ "pattern": "__SLUG__.0801564.xyz", "custom_domain": true }],
+  "assets": {
+    "directory": "../web/dist",
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/ws/*"]
+  },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "RoomDO" }, { "name": "INDEX", "class_name": "IndexDO" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomDO"] }, { "tag": "v2", "new_sqlite_classes": ["IndexDO"] }]
+}

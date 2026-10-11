@@ -1,0 +1,39 @@
+{
+  "name": "@gizmo564/themes",
+  "version": "0.1.0",
+  "description": "Shared design tokens, house mechanics (press-in buttons, panels, chips, modals...) and nine switchable themes.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web/ThemePicker": "./web/ThemePicker.tsx",
+    "./web/base.css": "./web/base.css",
+    "./web/index.css": "./web/index.css",
+    "./web/theme": "./web/theme.ts",
+    "./web/themes/blush.css": "./web/themes/blush.css",
+    "./web/themes/dusk.css": "./web/themes/dusk.css",
+    "./web/themes/forest.css": "./web/themes/forest.css",
+    "./web/themes/lavender-night.css": "./web/themes/lavender-night.css",
+    "./web/themes/lavender.css": "./web/themes/lavender.css",
+    "./web/themes/neon-night.css": "./web/themes/neon-night.css",
+    "./web/themes/ocean.css": "./web/themes/ocean.css",
+    "./web/themes/pastel-pop.css": "./web/themes/pastel-pop.css",
+    "./web/themes/sunrise.css": "./web/themes/sunrise.css",
+    "./web/tokens.css": "./web/tokens.css"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {},
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

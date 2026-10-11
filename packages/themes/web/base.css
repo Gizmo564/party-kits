@@ -1,0 +1,172 @@
+/*
+ * 0801564.xyz party-game base styles: the MECHANICS of the house style, independent of any color scheme.
+ *
+ *   thick ink outline + hard offset shadow on everything you can press, and pressing it collapses the shadow
+ *   (the button moves down-right by the shadow size, as if pushed into the page).
+ *
+ * Every color, radius, font and shadow below is a token from tokens.css. A theme file only sets those tokens
+ * (see themes/*.css and HOW_TO_ADD_A_THEME.md); this file never names a color. Keep it that way.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+html { background: var(--page-bg, var(--bg)); background-attachment: fixed; background-repeat: no-repeat; background-size: cover; -webkit-text-size-adjust: 100%; color-scheme: var(--color-scheme, light); }
+body {
+  background: transparent; color: var(--ink); font-family: var(--font-body); line-height: 1.4;
+  overscroll-behavior: none; -webkit-tap-highlight-color: transparent;
+  padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+}
+h1, h2, h3, .display { font-family: var(--font-display); font-weight: 700; margin: 0; }
+h1 { font-size: clamp(30px, 6vw, 48px); line-height: 1.05; }
+h2 { font-size: 22px; }
+p { margin: 0; }
+a { color: var(--link, var(--ink)); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- layout ---------- */
+.page { max-width: 760px; margin: 0 auto; padding: 20px 16px calc(40px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px; min-height: 100dvh; }
+.page.wide { max-width: 1100px; }
+.center-col { width: 100%; max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.row.nowrap { flex-wrap: nowrap; }
+.grow { flex: 1; min-width: 0; }
+.muted { color: var(--ink-soft); font-size: 14px; }
+.err { color: var(--bad-text, var(--bad)); font-weight: 700; font-size: 14px; }
+.center-text { text-align: center; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; }
+
+/* ---------- buttons: the press-in ---------- */
+.btn {
+  min-height: 48px; padding: 0 20px; border: var(--border) solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
+  font-family: var(--font-display); font-weight: 700; font-size: 17px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+  transition: transform .08s ease, box-shadow .08s ease, background .12s;
+  -webkit-user-select: none; user-select: none; touch-action: manipulation; position: relative;
+}
+.btn.primary { background: var(--accent-2); color: var(--accent-2-ink); }
+.btn.accent { background: var(--accent); color: var(--accent-ink); }
+.btn.good { background: var(--good); color: var(--good-ink, var(--ink)); }
+.btn.danger { background: var(--bad); color: var(--bad-ink, var(--ink)); }
+.btn.small { min-height: 40px; padding: 0 14px; font-size: 15px; }
+.btn.big { min-height: 58px; font-size: 20px; padding: 0 26px; }
+.btn.block { width: 100%; }
+.btn:active:not(:disabled) { transform: translate(var(--press), var(--press)); box-shadow: 0 0 0 var(--shadow-color); }
+@media (hover: hover) { .btn:hover:not(:disabled) { transform: translate(var(--press), var(--press)); box-shadow: 0 0 0 var(--shadow-color); } }
+.btn:disabled { background: var(--surface-2); color: var(--ink-soft); border-color: var(--ink-soft); filter: grayscale(1); box-shadow: none; transform: translate(var(--press), var(--press)); cursor: not-allowed; }
+.btn[aria-pressed="true"] { background: var(--accent-2); color: var(--accent-2-ink); }
+.link-btn { background: none; border: 0; padding: 6px; color: var(--ink); text-decoration: underline; font-weight: 700; min-height: 40px; }
+.icon { display: inline-block; vertical-align: -3px; flex-shrink: 0; }
+
+/* ---------- surfaces ---------- */
+.panel { background: var(--surface); border: var(--border) solid var(--edge, var(--line)); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+.panel.warn { border-color: var(--warn); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: var(--border) solid var(--line); border-radius: var(--radius-pill); background: var(--surface); color: var(--ink); font-weight: 700; font-size: 14px; box-shadow: var(--shadow-sm); }
+.chip.good { background: var(--good); color: var(--good-ink, var(--ink)); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chipbtn { min-height: 40px; padding: 0 14px; border: var(--border) solid var(--line); border-radius: var(--radius-pill); background: var(--surface-2); color: var(--ink); font-weight: 700; box-shadow: var(--shadow-sm); }
+.chipbtn.on, .chipbtn[aria-checked="true"] { background: var(--accent-2); color: var(--accent-2-ink); }
+.chipbtn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- the "return to 0801564.xyz" pill (tilted, like the highlighted word in the landing title) ---------- */
+.return-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border: var(--border) solid var(--line); border-radius: 18px; background: var(--accent-2); color: var(--accent-2-ink); font-family: var(--font-display); font-weight: 600; font-size: 15px; text-decoration: none; box-shadow: var(--shadow-sm); transform: rotate(-1.5deg); transition: transform .12s ease, box-shadow .12s ease; }
+.return-link:hover { transform: rotate(0deg) translate(-2px, -2px); box-shadow: 6px 6px 0 var(--shadow-color); }
+.return-link:active { transform: rotate(0deg) translate(-1px, -1px); box-shadow: 5px 5px 0 var(--shadow-color); }
+.return-link:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .return-link { transition: none; } }
+
+/* ---------- inputs ---------- */
+.field { min-height: 46px; width: 100%; min-width: 0; padding: 0 12px; border: var(--border) solid var(--line); border-radius: calc(var(--radius) - 2px); background: var(--field-bg, var(--surface)); color: var(--ink); font: inherit; font-weight: 700; font-size: 17px; }
+.field::placeholder { color: var(--ink-soft); font-weight: 600; }
+.field.narrow { width: 110px; flex: none; }
+.field.code { text-transform: uppercase; letter-spacing: .25em; text-align: center; font-size: 22px; }
+.toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 44px; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.toggle-box { width: 28px; height: 28px; flex: none; border: var(--border) solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-sm); display: grid; place-items: center; }
+.toggle input:checked + .toggle-box { background: var(--accent-2); }
+.toggle input:checked + .toggle-box::after { content: ''; width: 12px; height: 7px; border-left: 3px solid var(--accent-2-ink); border-bottom: 3px solid var(--accent-2-ink); transform: rotate(-45deg) translate(1px, -1px); }
+.toggle input:focus-visible + .toggle-box { outline: 3px solid var(--focus); outline-offset: 2px; }
+.stepper { display: inline-flex; align-items: center; gap: 8px; }
+.stepper-val { min-width: 2ch; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 36px; height: 36px; border-radius: 50%; border: var(--border) solid var(--line); box-shadow: var(--shadow-sm); padding: 0; }
+.swatch.on { outline: 3px solid var(--focus); outline-offset: 2px; }
+.swatch:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ---------- people ---------- */
+.avatar { display: inline-flex; align-items: center; justify-content: center; flex: none; border: var(--border) solid var(--line); border-radius: 50%; font-family: var(--font-display); font-weight: 700; color: var(--avatar-ink, #2b2620); box-shadow: var(--shadow-sm); }
+.players { display: flex; flex-direction: column; gap: 8px; }
+.player-row { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.player-row.away { opacity: .55; }
+.badge { font-size: 12px; font-weight: 800; padding: 1px 8px; border: 2px solid var(--line); border-radius: var(--radius-pill); background: var(--accent-2); color: var(--accent-2-ink); }
+
+/* ---------- room code ---------- */
+.codepanel { align-items: center; text-align: center; }
+.bigcode { font-family: var(--font-display); font-weight: 800; font-size: clamp(56px, 16vw, 96px); letter-spacing: .14em; line-height: 1.05; padding-left: .14em; }
+.qr { background: #fff; border-radius: 12px; padding: 6px; box-sizing: content-box; line-height: 0; border: var(--border) solid var(--line); }
+.qr svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- dialogs and notices ---------- */
+.modal-back { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / .45); display: grid; place-items: center; padding: 16px; }
+.modal { width: min(520px, 100%); max-height: 90dvh; overflow: auto; }
+.toast-wrap { position: fixed; left: 0; right: 0; bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 60; pointer-events: none; }
+.toast { pointer-events: auto; padding: 10px 16px; border: var(--border) solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); font-weight: 700; }
+.banner { padding: 10px 14px; border: var(--border) solid var(--line); border-radius: var(--radius); background: var(--accent-2); color: var(--accent-2-ink); font-weight: 700; text-align: center; }
+.banner.bad { background: var(--bad); color: var(--bad-ink, var(--ink)); }
+
+/* ---------- game plumbing ---------- */
+/* A fixed design box scaled to the window (see lobby-ui fit.ts): the same table on a phone and on a TV, no scrolling. */
+.stage { position: fixed; inset: 0; overflow: hidden; }
+.stage > .stage-box { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+/* inside a Stage the page is the design box, not the window: min-height 100dvh would be scaled up and the bottom cut off */
+.stage-box > .page { min-height: 0; height: 100%; box-sizing: border-box; padding-top: 12px; padding-bottom: 12px; gap: 10px; }
+.cover { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px; }
+.scoreboard { display: flex; flex-direction: column; gap: 8px; }
+.score-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: var(--border) solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.score-row.me { background: var(--accent-2); color: var(--accent-2-ink); }
+.score-row b.pts { font-family: var(--font-display); font-size: 22px; min-width: 2ch; text-align: right; }
+.turn-timer text { font-family: var(--font-display); font-weight: 800; }
+.turn-timer .ring-bg { fill: var(--surface); stroke: var(--line); }
+.turn-timer .ring { stroke: var(--good); transition: stroke-dashoffset .1s linear; }
+.turn-timer.urgent .ring { stroke: var(--bad); }
+.turn-timer text { fill: var(--ink); }
+.music-btn { width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+/* the Chromecast is modest hardware: the cast receiver opens the display page with ?cast=1 (class added in main.tsx) */
+html.cast *, html.cast *::before, html.cast *::after { animation: none !important; transition: none !important; }
+
+/* ---------- avatar picker (lobby-ui) ---------- */
+.looks { display: flex; flex-wrap: wrap; gap: 6px; }
+.lookbtn { padding: 0; border: 0; background: none; border-radius: 50%; line-height: 0; }
+.lookbtn.on { outline: 3px solid var(--focus); outline-offset: 2px; }
+.looks .avatar { box-shadow: none; }
+
+/* credits panel (rules-results/Credits): collapsed, small print */
+.credits { text-align: left; }
+.credits summary { cursor: pointer; }
+.credits-body p { margin: 6px 0; font-size: 13px; line-height: 1.4; }
+.credits-body a { color: inherit; text-decoration: underline; }
+
+/* "Trying to join a game? Go to play.0801564.xyz" box on every front menu: dashed, full-width button */
+.joinblurb { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; padding: 12px; border: 3px dashed var(--line); border-radius: 18px; font-weight: 700; text-align: center; }
+.joinblurb .btn { width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; text-decoration: none; }
+
+/* ---------- the TV lobby: fits the window, never scrolls ---------- */
+.page.tvlobby { max-width: min(1400px, 96vw); height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); grid-template-rows: auto minmax(0, 1fr); gap: clamp(8px, 1.6vh, 16px) clamp(12px, 2.4vw, 32px); padding: clamp(8px, 1.6vh, 20px) 16px; box-sizing: border-box; }
+.page.tvlobby > .row:first-child { grid-column: 1 / -1; }
+.tvlobby .tvleft { min-height: 0; display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: clamp(6px, 1.4vh, 14px); }
+.tvlobby .bigcode { font-size: clamp(44px, 12vh, 120px); }
+.tvlobby .qr { width: clamp(120px, 34vh, 260px) !important; height: clamp(120px, 34vh, 260px) !important; }
+.tvlobby .tvnote { margin: 0; }
+.tvlobby .playerpanel { min-height: 0; overflow: hidden; align-self: stretch; }
+.tvplayers { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 22vh, 260px), 1fr)); gap: clamp(4px, 1vh, 10px) 12px; align-content: start; min-height: 0; }
+.tvplayers .player-row { min-height: 0; font-size: clamp(14px, 2.8vh, 26px); }
+.tvplayers .avatar { width: clamp(28px, 5vh, 52px) !important; height: clamp(28px, 5vh, 52px) !important; }
+.tvplayers .avatar-svg { width: 100%; height: 100%; }
+@media (max-aspect-ratio: 1/1) { .page.tvlobby { grid-template-columns: 1fr; grid-template-rows: auto auto minmax(0, 1fr); } }

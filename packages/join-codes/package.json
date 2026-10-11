@@ -1,0 +1,25 @@
+{
+  "name": "@gizmo564/join-codes",
+  "version": "0.1.0",
+  "description": "Four-letter room codes: first letter picks the game, letter four is a check letter. Roster (makeRoster) per game, shared manifest.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./engine/join-codes": "./engine/join-codes.ts",
+    "./engine/manifest.json": "./engine/manifest.json",
+    "./engine/roster": "./engine/roster.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {},
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

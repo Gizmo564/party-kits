@@ -1,0 +1,10 @@
+/* lavender: warm white + plum ink. From the landing page and play.0801564.xyz (light mode). */
+html[data-theme="lavender"] {
+  --bg: #fff8ee; --bg-2: #f3eaf9; --surface: #ffffff; --surface-2: #f3eaf9;
+  --ink: #3d2b4f; --ink-soft: #5a4870; --line: #3d2b4f; --edge: #ddd0ea;
+  --accent: #d9ccff; --accent-ink: #3d2b4f; --accent-2: #ffd3b6; --accent-2-ink: #3d2b4f;
+  --good: #bdebd0; --bad: #ff9db8; --warn: #ffefa8; --focus: #3d2b4f;
+  --good-ink: #3d2b4f; --bad-ink: #3d2b4f; --bad-text: #a3324f; --link: #5a3a8f;
+  --shadow-color: #3d2b4f; --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: light;
+}

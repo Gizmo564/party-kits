@@ -1,0 +1,26 @@
+{
+  "name": "@gizmo564/bots-away",
+  "version": "0.1.0",
+  "description": "RoomPlugin: host-managed bots, away-player takeover after a 25 s grace, host handoff. The game supplies botAct/awayAct; the plugin supplies timing and messages.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./server/bots-away": "./server/bots-away.ts",
+    "./server": "./server/index.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/room-server": "^0.1.0"
+  },
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

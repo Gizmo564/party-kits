@@ -1,0 +1,10 @@
+/* dusk: dark plum + pink. From Tank Tactics. Accent is deliberately deep so light text stays legible on it. */
+html[data-theme="dusk"] {
+  --bg: #1c1a24; --bg-2: #262330; --surface: #242030; --surface-2: #262330;
+  --ink: #efe9f5; --ink-soft: #b6aed0; --line: #efe9f5; --edge: #3b3650;
+  --accent: #c23f7c; --accent-ink: #ffffff; --accent-2: #ffd76a; --accent-2-ink: #1c1a24;
+  --good: #17753f; --bad: #c23f3f; --warn: #ffd76a; --focus: #ffd76a;
+  --good-ink: #ffffff; --bad-ink: #ffffff; --bad-text: #ff9a9a; --link: #ff9dc9;
+  --shadow-color: rgba(0, 0, 0, 0.6); --shadow: 4px 4px 0 var(--shadow-color); --shadow-sm: 2px 2px 0 var(--shadow-color);
+  --color-scheme: dark;
+}

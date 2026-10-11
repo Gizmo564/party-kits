@@ -1,0 +1,12 @@
+{
+  "name": "pass-the-phone",
+  "description": "One-device handover: key-based cover gate (PassGate + pass-gate-state), re-cover on hidden tab or idle, and a PassCover screen. Logic adopted from the former game-kit/pass-the-phone (removed).",
+  "tests": [
+    "web/pass-gate-state.test.ts",
+    "web/pass-gate.test.tsx"
+  ],
+  "requires": [
+    "lobby-ui (Avatar)",
+    "themes (.cover)"
+  ]
+}

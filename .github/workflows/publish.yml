@@ -1,0 +1,19 @@
+# NOT RUN YET (untested). Needs an npm automation token saved as the repository secret NPM_TOKEN, and the @gizmo564 scope to exist on npm.
+name: publish
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+jobs:
+  publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions: { contents: read, id-token: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, registry-url: 'https://registry.npmjs.org' }
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/publish-changed.mjs
+        env: { NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}' }
