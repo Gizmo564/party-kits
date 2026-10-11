@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "timezone": "America/Denver",
   "schedule": ["before 6am on monday"],
   "packageRules": [
     { "matchUpdateTypes": ["minor", "patch"], "groupName": "non-major dependencies" },
