@@ -1,0 +1,12 @@
+{
+  "name": "jukebox",
+  "description": "A jukebox for the party games: a shared song list fetched from one music host, a rolling-out panel with an Auto choice and a volume slider, and a room plugin so the host's pick plays on the TV.",
+  "tests": [
+    "web/jukebox.test.tsx",
+    "server/jukebox-plugin.test.ts"
+  ],
+  "requires": [
+    "audio",
+    "room-server"
+  ]
+}

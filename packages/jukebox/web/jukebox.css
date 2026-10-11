@@ -1,0 +1,15 @@
+/* The jukebox panel. Uses the game's own colours where it has them (--ink, --line, --card), with plain fallbacks. */
+.jukebox { display: grid; gap: 8px; justify-items: start; }
+.jukebox-panel {
+  display: grid; gap: 10px; width: min(100%, 420px);
+  padding: 12px; border-radius: 14px;
+  border: 2px solid var(--ink, var(--line, #2b2420)); background: var(--card, var(--surface, #fff)); color: var(--ink, #2b2420);
+  transform-origin: top left; animation: jukebox-roll 180ms ease-out;
+}
+.jukebox-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.jukebox-note { margin: 0; font-size: 0.85em; opacity: 0.75; }
+.jukebox-volume { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-weight: 600; }
+.jukebox-volume input[type=range] { width: 100%; min-height: 32px; accent-color: var(--accent, #ff6b4a); }
+.jukebox-pct { min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; }
+@keyframes jukebox-roll { from { opacity: 0; transform: scaleY(0.6); } to { opacity: 1; transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .jukebox-panel { animation: none; } }

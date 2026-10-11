@@ -1,0 +1,42 @@
+{
+  "name": "@gizmo564/jukebox",
+  "version": "0.1.0",
+  "description": "A jukebox for the party games: a shared song list fetched from one music host, a rolling-out panel with an Auto choice and a volume slider, and a room plugin so the host's pick plays on the TV.",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./web": "./web/index.ts",
+    "./web/library": "./web/library.ts",
+    "./web/jukebox": "./web/jukebox.ts",
+    "./web/JukeboxPanel": "./web/JukeboxPanel.tsx",
+    "./web/jukebox.css": "./web/jukebox.css",
+    "./server": "./server/index.ts",
+    "./server/jukebox-plugin": "./server/jukebox-plugin.ts"
+  },
+  "files": [
+    "**/*",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!test",
+    "!testing",
+    "!**/testing"
+  ],
+  "dependencies": {
+    "@gizmo564/audio": "^0.1.3",
+    "@gizmo564/room-server": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "author": "Tanner Nelson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gizmo564/party-kits.git",
+    "directory": "packages/jukebox"
+  }
+}

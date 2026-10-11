@@ -26,6 +26,8 @@ export interface AudioConfig {
   urls?: Record<string, string>;
   /** localStorage key of the mute flag, to keep a game's existing one (default `${game}-muted`) */
   mutedKey?: string;
+  /** localStorage key of the music volume the player chose with a slider (default `${game}-volume`) */
+  volumeKey?: string;
   /** named looping tracks; file defaults to `${name}.mp3` */
   tracks?: Record<string, TrackDef>;
   /** synth recipes by name; defaults to the shared set */
@@ -46,8 +48,24 @@ export interface AudioKit {
   setOutput(on: boolean): void;
   setDucked(on: boolean): void;
   unlock(): Promise<void>;
-  /** called when mute changes (for buttons) */
+  /** called when mute, volume or the override changes (for buttons and sliders) */
   subscribe(fn: () => void): () => void;
+  /**
+   * Make a track available by URL after the fact (the jukebox's songs come from a list fetched at run time). Re-adding a
+   * name with a new URL replaces it.
+   */
+  addTrack(name: string, url: string, volume?: number): void;
+  /**
+   * Play this track instead of whatever the game asks for with `music()`, for as long as the game wants music at all.
+   * Stings (`oneShot`) and silence (`stop`, `music(null)`) still behave as the game says. `null` goes back to the game's own
+   * music ("Auto").
+   */
+  setOverride(name: string | null): void;
+  getOverride(): string | null;
+  /** music volume 0..1 (effects are never touched). `null` goes back to each track's own level. Remembered per device. */
+  setVolume(v: number | null): void;
+  /** the level the slider should show: the player's choice, or the level of the track playing now */
+  getVolume(): number;
 }
 
 const isAudioType = (t: string | null) => !!t && (t.includes('audio') || t.includes('ogg'));
@@ -55,13 +73,21 @@ const isAudioType = (t: string | null) => !!t && (t.includes('audio') || t.inclu
 export function createAudio(cfg: AudioConfig): AudioKit {
   const base = cfg.baseUrl ?? '/sounds/';
   const mutedKey = cfg.mutedKey ?? `${cfg.game}-muted`;
-  const urls = cfg.urls ?? {};
+  const volumeKey = cfg.volumeKey ?? `${cfg.game}-volume`;
+  const urls: Record<string, string> = { ...(cfg.urls ?? {}) };
+  const extraVolume: Record<string, number> = {};
   const tracks = cfg.tracks ?? {};
   const recipes = cfg.sfx ?? DEFAULT_SFX;
   let muted = false;
   try { muted = localStorage.getItem(mutedKey) === '1'; } catch { /* storage blocked: fine */ }
+  let volume: number | null = null;
+  try { const raw = localStorage.getItem(volumeKey); if (raw !== null && raw !== '') { const n = Number(raw); if (Number.isFinite(n)) volume = Math.min(1, Math.max(0, n)); } } catch { /* storage blocked: fine */ }
   let output = true, ducked = false;
   let want: string | null = null;
+  let override: string | null = null;
+  /** what actually plays: the override while the game wants music, else what the game asked for */
+  const eff = () => (want ? (override ?? want) : null);
+  const trackLevel = (name: string | null) => (name ? (extraVolume[name] ?? tracks[name]?.volume) : undefined) ?? 0.4;
   let single: { name: string; el: HTMLAudioElement } | null = null;
   const listeners = new Set<() => void>();
 
@@ -77,7 +103,10 @@ export function createAudio(cfg: AudioConfig): AudioKit {
         try {
           const head = urls[name] ? { ok: true, headers: new Headers({ 'content-type': 'audio/mpeg' }) } : await fetch(fileOf(name), { method: 'HEAD' });
           if (!head.ok || !isAudioType(head.headers.get('content-type'))) { els.set(name, null); return null; }
-          const el = new Audio(fileOf(name));
+          const el = new Audio();
+          // another site's file (the central music host) needs CORS for the volume fallback below to be allowed to read it
+          try { if (new URL(fileOf(name), location.href).origin !== location.origin) el.crossOrigin = 'anonymous'; } catch { /* odd url: leave it */ }
+          el.src = fileOf(name);
           el.preload = 'auto';
           els.set(name, el);
           return el;
@@ -88,14 +117,30 @@ export function createAudio(cfg: AudioConfig): AudioKit {
     return p;
   }
 
+  // iPhones ignore element.volume (it stays at 1), so there the level goes through a Web Audio gain instead.
+  const gains = new WeakMap<HTMLAudioElement, GainNode>();
+  function setElVolume(el: HTMLAudioElement, v: number) {
+    try { el.volume = v; } catch { /* ignore */ }
+    const g = gains.get(el);
+    if (g) { g.gain.value = v; return; }
+    if (Math.abs(el.volume - v) <= 0.01) return;      // the element took it: nothing more to do
+    try {
+      const ctx = audioCtx();
+      const gain = ctx.createGain();
+      ctx.createMediaElementSource(el).connect(gain).connect(ctx.destination);
+      gain.gain.value = v; gains.set(el, gain);
+    } catch { /* leave the element at full volume */ }
+  }
+
   const audible = () => !muted && output && !ducked;
   function apply() {
     for (const [name, el] of els) {
       if (!el) continue;
-      const isWanted = name === want && !single;
+      const isWanted = name === eff() && !single;
       const isSingle = single?.name === name;
       if ((isWanted || isSingle) && audible()) {
-        el.volume = tracks[name]?.volume ?? 0.4;
+        // the slider is for the background music only: stings (a win jingle) keep their own level
+        setElVolume(el, isWanted ? (volume ?? trackLevel(name)) : trackLevel(name));
         el.loop = isWanted;
         try { void el.play()?.catch(() => undefined); } catch { /* blocked until a tap */ }
       } else {
@@ -153,7 +198,8 @@ export function createAudio(cfg: AudioConfig): AudioKit {
     },
     music(name) {
       want = name; single = null;
-      if (name) void load(name).then(apply); else apply();
+      const e = eff();
+      if (e) void load(e).then(apply); else apply();
       apply();
     },
     oneShot(name, onEnd) {
@@ -177,6 +223,28 @@ export function createAudio(cfg: AudioConfig): AudioKit {
     setDucked(on) { ducked = on; apply(); },
     async unlock() { await unlockAudioContext(); apply(); },
     subscribe(fn) { listeners.add(fn); return () => { listeners.delete(fn); }; },
+    addTrack(name, url, vol) {
+      urls[name] = url;
+      if (vol !== undefined) extraVolume[name] = vol;
+      const old = els.get(name);
+      if (old !== undefined) { try { old?.pause(); } catch { /* ignore */ } els.delete(name); }
+      samples.delete(name);
+      if (eff() === name) void load(name).then(apply);
+    },
+    setOverride(name) {
+      if (override === name) return;
+      override = name;
+      const e = eff();
+      if (e && !single) void load(e).then(apply);
+      apply(); listeners.forEach((f) => f());
+    },
+    getOverride: () => override,
+    setVolume(v) {
+      volume = v === null ? null : Math.min(1, Math.max(0, v));
+      try { if (volume === null) localStorage.removeItem(volumeKey); else localStorage.setItem(volumeKey, String(volume)); } catch { /* ignore */ }
+      apply(); listeners.forEach((f) => f());
+    },
+    getVolume: () => volume ?? trackLevel(eff()),
   };
 
   if ((cfg.autoUnlock ?? true) && typeof document !== 'undefined') {
