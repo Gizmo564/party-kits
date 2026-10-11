@@ -29,7 +29,7 @@ Avatars on the TV lobby; no Leave/Close on the TV; Fullscreen only in a plain br
 3. Existing rooms during a deploy: OK to let rooms in progress end when it deploys, as with earlier deploys?
 
 ---
-## RESULT (2026-10-10, branch `kits-migration` in chameleon-xyz; NOT merged, NOT deployed)
+## RESULT (2026-10-10, branch `kits-migration` in chameleon-xyz; later merged to main (5255564) and deployed, version b8f37197; not pushed to GitHub)
 
 Approved by Tanner: stages 1-4. Done on the branch (4 commits):
 - **Server** is now the kit's `GameRoomDO` + a `chameleonLogic` (packages/server/src/logic.ts). `RoomDO` keeps its name and the migration tags are untouched. Old files (`room.ts`, `joincodes.ts`, `nap.ts`, `stats.ts`, `partyadmin.ts`) are gone; the kit provides them. 18 server tests ported (10 engine tests unchanged); `tsc`, tests, `vite build` and `wrangler deploy --dry-run` pass on the Mac.
@@ -41,7 +41,7 @@ Kit additions made for this (all in room-server): `ActContext.hostId`, `Snapshot
 ### Behaviour differences from the live game (all deliberate or unavoidable; check before deploying)
 1. TV lobby shows avatars; no Leave link on the TV; Fullscreen only in a plain browser (approved).
 2. Avatars are assigned automatically; Chameleon has no avatar picker (the kit's picker was not added).
-3. "End game for everyone" button removed (the kit has no room-close message). Host can still go back to the lobby.
+3. UPDATE: the kit now has "End game for everyone" (host only, also on the last-round results screen), a `closed` reason `'host'` and a 3-minute close for empty rooms, so the code is freed. Chameleon uses all three. Whether a finished game should close the room by itself is not decided; today the host presses End.
 4. A player who closes the app now holds the vote up for about 25 s (then counts as abstaining); before, voting finished instantly on disconnect. Host can still tap Close voting now.
 5. Disconnected players at game start are seated (before: turned into watchers).
 6. The "finished round" usage count now counts one per finished GAME (all rounds), not per round.
