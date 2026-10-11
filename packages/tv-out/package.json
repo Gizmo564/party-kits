@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/tv-out",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Show the room's TV screen on a wired (HDMI) display: a \"Show on wired TV\" button that opens the display page in its own window (placed on the second screen in Chrome/Edge), an \"Open on another device\" link for phone hosts, and a window-side setup (calm look, first-click fullscreen). Separate from the Chromecast kit.",
   "type": "module",
   "exports": {

@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/jukebox",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A jukebox for the party games: a shared song list fetched from one music host, a rolling-out panel with an Auto choice and a volume slider, and a room plugin so the host's pick plays on the TV.",
   "type": "module",
   "exports": {
