@@ -18,11 +18,12 @@ export function Tutorial({ game, steps, force = false, onDone, sound }: { game: 
   const s = steps[i];
   const last = i === steps.length - 1;
   return (
-    <div className="modal-back" data-testid="tour">
-      <div className="modal panel" role="dialog" aria-modal="true" aria-label="Quick tour">
+    <div className="modal-back tour-back" data-testid="tour">
+      <div className="modal panel tour" role="dialog" aria-modal="true" aria-label="Quick tour">
         <small className="muted">Quick tour · {i + 1} of {steps.length}</small>
         <h2>{s.title}</h2>
         <p>{s.body}</p>
+        <div className="tour-dots" aria-hidden>{steps.map((_, k) => <i key={k} className={k === i ? 'on' : ''} />)}</div>
         <div className="row between">
           <button className="btn small" onClick={done} data-testid="tour-skip">Skip</button>
           <span className="row">

@@ -20,9 +20,9 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' } as const;
  *
  *   <Credits music={[{ title: 'Survival Mode', by: 'Blue Deer' }]} extra={[<>Song previews: <a href="https://www.deezer.com">Deezer</a></>]} />
  */
-export function Credits({ music = [], extra = [], creator = CREATOR_LINE, note = AUDIO_LIBRARY_NOTE }: { music?: MusicCredit[]; extra?: ReactNode[]; creator?: string; note?: string | null }) {
+export function Credits({ music = [], extra = [], creator = CREATOR_LINE, note = AUDIO_LIBRARY_NOTE, open }: { music?: MusicCredit[]; extra?: ReactNode[]; creator?: string; note?: string | null; /** start expanded (a TV / the Chromecast receiver shows them open: pass isCastReceiver()) */ open?: boolean }) {
   return (
-    <details className="credits panel" data-testid="credits">
+    <details className="credits panel" data-testid="credits" open={open || undefined}>
       <summary><b>Credits</b></summary>
       <div className="credits-body">
         <p><b>{creator}</b></p>

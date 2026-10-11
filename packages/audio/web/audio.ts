@@ -22,6 +22,10 @@ export interface AudioConfig {
   game: string;
   /** where the files live (default '/sounds/') */
   baseUrl?: string;
+  /** a name -> URL map for files a bundler already hashed (Vite's import.meta.glob). Wins over baseUrl for those names, and is trusted to exist. */
+  urls?: Record<string, string>;
+  /** localStorage key of the mute flag, to keep a game's existing one (default `${game}-muted`) */
+  mutedKey?: string;
   /** named looping tracks; file defaults to `${name}.mp3` */
   tracks?: Record<string, TrackDef>;
   /** synth recipes by name; defaults to the shared set */
@@ -50,7 +54,8 @@ const isAudioType = (t: string | null) => !!t && (t.includes('audio') || t.inclu
 
 export function createAudio(cfg: AudioConfig): AudioKit {
   const base = cfg.baseUrl ?? '/sounds/';
-  const mutedKey = `${cfg.game}-muted`;
+  const mutedKey = cfg.mutedKey ?? `${cfg.game}-muted`;
+  const urls = cfg.urls ?? {};
   const tracks = cfg.tracks ?? {};
   const recipes = cfg.sfx ?? DEFAULT_SFX;
   let muted = false;
@@ -63,14 +68,14 @@ export function createAudio(cfg: AudioConfig): AudioKit {
   // ---- elements (lazy, probed once so a missing file or an SPA fallback page never plays) ----
   const els = new Map<string, HTMLAudioElement | null>();
   const loading = new Map<string, Promise<HTMLAudioElement | null>>();
-  const fileOf = (name: string) => base + (tracks[name]?.file ?? `${name}.mp3`);
+  const fileOf = (name: string) => urls[name] ?? base + (tracks[name]?.file ?? `${name}.mp3`);
   function load(name: string): Promise<HTMLAudioElement | null> {
     if (els.has(name)) return Promise.resolve(els.get(name)!);
     let p = loading.get(name);
     if (!p) {
       p = (async () => {
         try {
-          const head = await fetch(fileOf(name), { method: 'HEAD' });
+          const head = urls[name] ? { ok: true, headers: new Headers({ 'content-type': 'audio/mpeg' }) } : await fetch(fileOf(name), { method: 'HEAD' });
           if (!head.ok || !isAudioType(head.headers.get('content-type'))) { els.set(name, null); return null; }
           const el = new Audio(fileOf(name));
           el.preload = 'auto';
@@ -106,10 +111,10 @@ export function createAudio(cfg: AudioConfig): AudioKit {
     if (sampleLoading.has(name)) return;
     sampleLoading.add(name);
     const ctx = audioCtx();
-    for (const ext of ['mp3', 'ogg', 'wav']) {
+    for (const ext of urls[name] ? ['url'] : ['mp3', 'ogg', 'wav']) {
       try {
-        const r = await fetch(`${base}${name}.${ext}`);
-        if (!r.ok || !isAudioType(r.headers.get('content-type'))) continue;
+        const r = await fetch(ext === 'url' ? urls[name] : `${base}${name}.${ext}`);
+        if (!r.ok || (ext !== 'url' && !isAudioType(r.headers.get('content-type')))) continue;
         samples.set(name, await ctx.decodeAudioData(await r.arrayBuffer()));
         return;
       } catch { /* try the next extension */ }

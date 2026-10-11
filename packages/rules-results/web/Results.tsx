@@ -22,14 +22,14 @@ export const winnersLine = (ranked: readonly RankedRow[]): string => {
 };
 
 /** A ranked list. Use alone mid-game, or inside ResultsScreen. */
-export function Scoreboard({ rows, lowWins = false, meId, unit = '' }: { rows: readonly ResultRow[]; lowWins?: boolean; meId?: string; unit?: string }) {
+export function Scoreboard({ rows, lowWins = false, meId, unit = '', renderAvatar }: { rows: readonly ResultRow[]; lowWins?: boolean; meId?: string; unit?: string; /** a game's own avatar instead of the kit face */ renderAvatar?: (r: RankedRow) => ReactNode }) {
   const ranked = rankRows(rows, lowWins);
   return (
     <ol className="scoreboard" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {ranked.map((r) => (
         <li key={r.id} className="player-row" data-testid="score-row" aria-current={r.id === meId ? 'true' : undefined}>
           <b style={{ minWidth: '2ch' }}>{r.place}</b>
-          <Avatar name={r.name} color={r.color} size={34} look={r.avatar} />
+          {renderAvatar ? renderAvatar(r) : <Avatar name={r.name} color={r.color} size={34} look={r.avatar} />}
           <span className="grow"><b>{r.name}{r.id === meId ? ' (you)' : ''}</b>{r.detail ? <small className="muted"> {r.detail}</small> : null}</span>
           {r.winner ? <span className="chip good">Winner</span> : null}
           <b>{r.score}{unit}</b>
@@ -40,8 +40,13 @@ export function Scoreboard({ rows, lowWins = false, meId, unit = '' }: { rows: r
 }
 
 /** The end-of-game screen: headline, ranked scores, and Play again (host) / waiting (everyone else). */
-export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, onEnd, headline, children, credits }: {
-  rows: readonly ResultRow[]; lowWins?: boolean; meId?: string; isHost: boolean; onAgain: () => void; onLeave: () => void; headline?: string; children?: ReactNode;
+export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, onEnd, headline, children, credits, againLabel = 'Play again', leaveLabel = 'Leave', above, renderAvatar }: {
+  rows: readonly ResultRow[]; lowWins?: boolean; meId?: string; isHost: boolean; onAgain: () => void; onLeave?: () => void; headline?: string; children?: ReactNode;
+  /** the button text for the host ("Play again") and for leaving ("Leave", or "Menu") */
+  againLabel?: string; leaveLabel?: string;
+  /** shown above the headline (a trophy...) */
+  above?: ReactNode;
+  renderAvatar?: (r: RankedRow) => ReactNode;
   /** host only: close the room for everyone and free its code (send { type: 'end' }). Shown under the credits. */
   onEnd?: () => void;
   /** a <Credits/> panel: shown on the game-over screen in all three live games */
@@ -51,14 +56,15 @@ export function ResultsScreen({ rows, lowWins, meId, isHost, onAgain, onLeave, o
   return (
     <div className="page">
       <div className="center-col">
+        {above}
         <h1>{headline ?? winnersLine(ranked)}</h1>
       </div>
-      <section className="panel"><Scoreboard rows={rows} lowWins={lowWins} meId={meId} /></section>
+      <section className="panel"><Scoreboard rows={rows} lowWins={lowWins} meId={meId} renderAvatar={renderAvatar} /></section>
       {children}
       {credits}
       <div className="row">
-        {isHost ? <button className="btn accent big grow" onClick={onAgain}>Play again</button> : <p className="muted grow center-text">Waiting for the host to start another game…</p>}
-        <button className="btn" onClick={onLeave}>Leave</button>
+        {isHost ? <button className="btn accent big grow" onClick={onAgain}>{againLabel}</button> : <p className="muted grow center-text">Waiting for the host to start another game…</p>}
+        {onLeave ? <button className="btn" onClick={onLeave}>{leaveLabel}</button> : null}
       </div>
       {isHost && onEnd ? <button className="btn small danger" onClick={onEnd} data-testid="end-all">End game for everyone</button> : null}
     </div>

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import { Modal } from '@gizmo564/lobby-ui/web/controls';
 
 export interface RuleSection { title: string; body: ReactNode }
@@ -22,5 +22,32 @@ export function RulesButton({ sections, label = 'How to play', className = 'btn 
       <button type="button" className={className} onClick={() => setOpen(true)}>{label}</button>
       {open ? <RulesModal sections={sections} onClose={() => setOpen(false)} /> : null}
     </>
+  );
+}
+
+/**
+ * The rules as a full page (not a dialog): a Back button, the title, and the sections as headings + content, then anything
+ * extra as `children` (a "show the tour again" button, a card table...). `head` replaces the whole top row (for a game with its own
+ * header art; it then provides its own Back button), `className` the page wrapper.
+ */
+export function RulesPage({ title = 'How to play', sections = [], onBack, backLabel = '← Back', head, className = 'page rules', children }: {
+  title?: string; sections?: RuleSection[]; onBack?: () => void; backLabel?: string; head?: ReactNode; className?: string; children?: ReactNode;
+}) {
+  return (
+    <div className={className} data-testid="rules-page">
+      {head ?? (
+        <div className="row between">
+          {onBack ? <button className="btn small" onClick={onBack}>{backLabel}</button> : <span />}
+          <h1 className="h-lg">{title}</h1>
+          <span />
+        </div>
+      )}
+      {sections.length ? (
+        <section className="panel stack">
+          {sections.map((s) => <Fragment key={s.title}><h2>{s.title}</h2>{s.body}</Fragment>)}
+        </section>
+      ) : null}
+      {children}
+    </div>
   );
 }

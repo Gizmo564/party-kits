@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react';
  * A ring that counts down to `deadline` (epoch ms, from Snapshot.deadline). `total` is the full length in ms so the ring
  * can show how much is left. Uses the server's clock offset if you pass one (`skewMs` = serverNow - clientNow).
  */
-export function TurnTimer({ deadline, total, size = 64, skewMs = 0, urgentBelowMs = 5000 }: { deadline: number | null; total: number; size?: number; skewMs?: number; urgentBelowMs?: number }) {
+export function TurnTimer({ deadline, total, size = 64, skewMs = 0, urgentBelowMs = 5000, tickMs = 200 }: { deadline: number | null; total: number; size?: number; skewMs?: number; urgentBelowMs?: number; /** how often the ring redraws, in ms (default 200) */ tickMs?: number }) {
   const [now, setNow] = useState(() => Date.now() + skewMs);
   useEffect(() => {
     if (deadline === null) return;
-    const t = setInterval(() => setNow(Date.now() + skewMs), 200);
+    const t = setInterval(() => setNow(Date.now() + skewMs), tickMs);
     return () => clearInterval(t);
-  }, [deadline, skewMs]);
+  }, [deadline, skewMs, tickMs]);
   if (deadline === null) return null;
   const left = Math.max(0, deadline - now);
   const r = 28, c = 2 * Math.PI * r;
