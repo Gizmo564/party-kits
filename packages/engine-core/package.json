@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/engine-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pure helpers every engine shares: seeded Rng/forkRng, Result/Status, text cleaning (cleanName, clampInt), ids and tokens, player palette, teams (cleanTeamProfile, assignTeams, groupByTeam), per-viewer view helpers, and vitest contract helpers (determinism, JSON-safe, no-leak).",
   "type": "module",
   "exports": {

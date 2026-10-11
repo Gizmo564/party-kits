@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/bots-away",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RoomPlugin: host-managed bots, away-player takeover after a 25 s grace, host handoff. The game supplies botAct/awayAct; the plugin supplies timing and messages.",
   "type": "module",
   "exports": {

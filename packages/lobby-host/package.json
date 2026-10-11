@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/lobby-host",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The online lobby assembled from the kit: LobbyScreen (code/QR, take-control, players with kick/make-host, bots, profile, settings, Start with a reason) and a schema-driven SettingsForm.",
   "type": "module",
   "exports": {

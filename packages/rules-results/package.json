@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/rules-results",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "First-run Tutorial (steps as data, remembered per game), RulesModal/RulesButton, ranked Scoreboard with ties, the end-of-game ResultsScreen (Play again for host), and the Credits panel shown on game-over screens.",
   "type": "module",
   "exports": {

@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/pass-the-phone",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-device handover: key-based cover gate (PassGate + pass-gate-state), re-cover on hidden tab or idle, and a PassCover screen. Logic adopted from the former game-kit/pass-the-phone (removed).",
   "type": "module",
   "exports": {

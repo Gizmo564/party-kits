@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/platform",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Glue to the rest of 0801564.xyz: Nap Guard client, signed admin calls + IndexDO registry, stats beacon (server); sign-in name prefill, Return link, analytics track() (web); _headers, index head snippet and the new-game checklist (root).",
   "type": "module",
   "exports": {

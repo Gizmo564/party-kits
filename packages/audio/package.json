@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/audio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One audio system: synth effects (with recordings overriding), looping music tracks, one-shot stings with chaining, per-game mute, music-device output switch, clip ducking, auto-unlock on first tap.",
   "type": "module",
   "exports": {

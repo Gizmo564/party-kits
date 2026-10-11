@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/room-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generic multi-device room: BaseRoom (members, rejoin, host, screens, settings, start/again, timers, per-viewer views), GameRoomDO (hibernation, idle close, nap freeze, stats), and the Worker routes. Also ships a tiny toy GameLogic for other packages' tests (server/testing/toy-logic).",
   "type": "module",
   "exports": {

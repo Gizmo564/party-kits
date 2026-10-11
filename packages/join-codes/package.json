@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/join-codes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Four-letter room codes: first letter picks the game, letter four is a check letter. Roster (makeRoster) per game, shared manifest.",
   "type": "module",
   "exports": {

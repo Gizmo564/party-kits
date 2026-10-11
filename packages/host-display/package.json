@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/host-display",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The TV / host-display experience: Stage (scale a fixed design to any window) and DisplayShell (code, QR, fullscreen). The server rules (screen joins as a spectator, claimHost, one music device) live in room-server's BaseRoom.",
   "type": "module",
   "exports": {

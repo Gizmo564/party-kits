@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/room-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browser side of a room: useRoom (websocket, rejoin token, reconnect, nap, closed), createRoom/roomInfo, join-link parsing, per-game storage, and the Room closed / reconnecting / nap notices.",
   "type": "module",
   "exports": {

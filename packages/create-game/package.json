@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/create-game",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Make a new 0801564.xyz party game: npm create @gizmo564/game \"Lucky Draw\"  (or npx @gizmo564/create-game ...)",
   "type": "module",
   "bin": {
