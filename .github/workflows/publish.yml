@@ -1,7 +1,9 @@
-# NOT RUN YET (untested). Needs an npm automation token saved as the repository secret NPM_TOKEN, and the @gizmo564 scope to exist on npm.
+# Publishes every package whose version is not on npm yet. Manual only: nothing is published until you press Run.
+# Authentication is npm Trusted Publishing (OIDC): each @gizmo564 package lists this repo + this file as a trusted publisher
+# (see docs/ or `npm trust list @gizmo564/<name>`). There is no token in this workflow on purpose.
 name: publish
 on:
-  workflow_dispatch:   # manual only: nothing is published until Tanner presses Run workflow
+  workflow_dispatch:
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -10,6 +12,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 24, registry-url: 'https://registry.npmjs.org' }
+      - run: npm --version   # trusted publishing needs npm 11.5.1 or newer
       - run: npm install --no-audit --no-fund
       - run: node scripts/publish-changed.mjs
-        env: { NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}' }
