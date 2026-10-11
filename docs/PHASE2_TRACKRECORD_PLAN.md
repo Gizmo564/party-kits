@@ -21,7 +21,7 @@ Typecheck, 58 engine + 26 server + 8 web tests, build and `wrangler deploy --dry
 7. Team buttons use the kit's team colours (selected button is team-coloured).
 8. Saved player tokens are new, so everyone rejoins as new after the deploy; rooms running at deploy end.
 9. Rooms with nobody connected close after 3 minutes; the host's End game for everyone closes the room (it already did).
-10. New: "Make host" / remove player buttons from the kit lobby are not added to Track Record's own lobby yet.
+10. UPDATE: the kit lobby "Make host" and "Remove" buttons are now in Track Record's lobby (host only, on a non-TV device).
 
 ## Not verified
 Real music playback (Deezer) on a TV and phone; a real Chromecast and the cast failure message; the iPhone app bridge (unit-tested in the kit only); admin counts; phone layouts beyond the screenshots; tablet/TV at other sizes.
