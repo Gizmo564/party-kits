@@ -74,7 +74,7 @@ describe('bots play', () => {
     r.nextWake(0);
     expect(r.tick(2000)).toBe(false);
     expect(r.nextWake(2000)).toBeNull();
-    const refused = { ...logic, botAct: () => ({ type: 'nonsense' }) as unknown as ToyAction, act: (s: ToyState, id: string, a: ToyAction) => (a.type === 'tap' || a.type === 'pass' ? logic.act(s, id, a, { now: 0, seed: 0 }) : { ok: false as const, error: 'refused' }) };
+    const refused = { ...logic, botAct: () => ({ type: 'nonsense' }) as unknown as ToyAction, act: (s: ToyState, id: string, a: ToyAction) => (a.type === 'tap' || a.type === 'pass' ? logic.act(s, id, a, { now: 0, seed: 0, hostId: null }) : { ok: false as const, error: 'refused' }) };
     const r2 = mk({}, refused); hello(r2, 'h'); send(r2, 'h', { type: 'bot', op: 'add' }); send(r2, 'h', { type: 'start' }, 0);
     r2.nextWake(0);
     expect(r2.tick(2000)).toBe(false);

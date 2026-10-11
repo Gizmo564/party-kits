@@ -17,7 +17,7 @@ const sections: SectionDef<S>[] = [
 ];
 const m = (o: Partial<MemberInfo>): MemberInfo => ({ id: 'x', name: 'X', color: '#ff9fb2', avatar: 0, role: 'player', connected: true, host: false, ...o });
 function snap(o: { you: Partial<Snapshot['you']> & { id: string }; members: MemberInfo[]; settings?: S }): Snapshot<S, unknown> {
-  return { type: 'state', v: 1, code: 'ABCD', you: { token: 't', role: 'player', host: false, screen: false, music: false, ...o.you }, members: o.members, settings: o.settings ?? { target: 3, fast: false, mode: 'a', secret: 1 }, started: false, over: false, view: null, events: [], eventSeq: 0, deadline: null, plugins: {} };
+  return { type: 'state', v: 1, code: 'ABCD', you: { token: 't', role: 'player', host: false, screen: false, music: false, ...o.you }, members: o.members, settings: o.settings ?? { target: 3, fast: false, mode: 'a', secret: 1 }, started: false, over: false, view: null, events: [], eventSeq: 0, deadline: null, serverNow: 0, plugins: {} };
 }
 const base = { joinUrl: 'https://play.0801564.xyz/?c=ABCD', minPlayers: 2, maxPlayers: 4, sections, error: '', onLeave: () => undefined };
 

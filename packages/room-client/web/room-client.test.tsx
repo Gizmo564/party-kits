@@ -15,7 +15,7 @@ class FakeWS implements SocketLike {
   say(m: object) { this.onmessage?.({ data: JSON.stringify(m) }); }
   drop() { this.readyState = 3; this.onclose?.(); }
 }
-const state = (token = 'tok1') => ({ type: 'state', v: 1, code: 'ABCD', you: { id: 'p1', token, role: 'player', host: true, screen: false, music: true }, members: [], settings: {}, started: false, over: false, view: null, events: [], eventSeq: 0, deadline: null, plugins: {} });
+const state = (token = 'tok1') => ({ type: 'state', v: 1, code: 'ABCD', you: { id: 'p1', token, role: 'player', host: true, screen: false, music: true }, members: [], settings: {}, started: false, over: false, view: null, events: [], eventSeq: 0, deadline: null, serverNow: 0, plugins: {} });
 const mkHook = (opts = {}, fetcher?: typeof fetch) => renderHook(() => useRoom({ game: 'g', code: 'ABCD', opts: { name: 'Ann', ...opts }, socket: (u) => new FakeWS(u), fetcher }));
 
 beforeEach(() => { FakeWS.all = []; localStorage.clear(); vi.useFakeTimers(); });

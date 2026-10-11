@@ -97,7 +97,7 @@ export function botsAway<S, A, V>(logic: GameLogic<any, S, A, V, any>, opts: Bot
         if (!auto(m, now)) continue;
         const at = plan.nextAt[m.id];
         if (at === undefined || at > now) continue;
-        const ctx = { now, seed: room.nextSeed() };
+        const ctx = { now, seed: room.nextSeed(), hostId: room.host?.id ?? null };
         const action = m.bot ? logic.botAct?.(room.game as S, m.id, ctx) : (logic.awayAct ?? logic.botAct)?.(room.game as S, m.id, ctx);
         // nothing to do (or the move was refused): sleep this seat until the game state changes
         if (!action || room.applyAct(m.id, action as never, now) !== null) { plan.nextAt[m.id] = Infinity; continue; }

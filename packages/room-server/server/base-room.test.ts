@@ -227,6 +227,27 @@ describe('playing', () => {
     expect(JSON.stringify(snap(r, 'c1').view)).toContain('secret-');
     expect(JSON.stringify(snap(r, 'tv').view)).not.toContain('secret-');
   });
+  it('again mid-game abandons the game only when the logic says it is abandonable', () => {
+    const r = lobby();
+    r.handle('c1', { type: 'start' } as Msg);
+    expect(r.handle('c1', { type: 'again' } as Msg)).toMatch(/not over/);
+    const abandonable = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', { ...toyLogic, abandonable: true }, [], 7);
+    hello(abandonable, 'c1', { name: 'Ann' }); hello(abandonable, 'c2', { name: 'Bo' });
+    abandonable.handle('c1', { type: 'start' } as Msg);
+    expect(abandonable.handle('c2', { type: 'again' } as Msg)).toMatch(/only the host/);
+    expect(abandonable.handle('c1', { type: 'again' } as Msg)).toBeNull();
+    expect(abandonable.started).toBe(false);
+  });
+  it('the action context tells the logic who the host is, and snapshots carry the server clock', () => {
+    const seen: (string | null)[] = [];
+    const spy = { ...toyLogic, act: (s: ToyState, seat: string, a: ToyAction, ctx: Parameters<typeof toyLogic.act>[3]) => { seen.push(ctx.hostId); return toyLogic.act(s, seat, a, ctx); } };
+    const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', spy, [], 7);
+    hello(r, 'c1', { name: 'Ann' }); hello(r, 'c2', { name: 'Bo' });
+    r.handle('c1', { type: 'start' } as Msg);
+    r.handle('c2', { type: 'act', action: { type: 'tap' } } as Msg);
+    expect(seen).toEqual([snap(r, 'c1').you.id]);
+    expect(r.snapshot('c1', 123_456)!.serverNow).toBe(123_456);
+  });
   it('again: host only, only when over, returns to the lobby with the same people', () => {
     const r = lobby();
     r.handle('c1', { type: 'settings', settings: { target: 1 } } as Msg); r.handle('c1', { type: 'start' } as Msg, 1);

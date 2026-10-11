@@ -323,7 +323,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   private again(me: Member, now: number): string | null {
     if (!me.host) return 'only the host can start another game';
     if (!this.game) return 'no game to finish';
-    if (!this.over) return 'the game is not over yet';
+    if (!this.over && !this.logic.abandonable) return 'the game is not over yet';
     this.game = null; this.events = []; this.eventSeq++;
     for (const p of this.pluginList) p.onAgain?.(this, now);
     return null;
@@ -339,7 +339,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   applyAct(seatId: string, action: Action, now: number): string | null {
     if (!this.game) return 'the game has not started';
     if (this.logic.isOver(this.game)) return 'the game is over';
-    const r = this.logic.act(this.game, seatId, action, { now, seed: this.nextSeed() });
+    const r = this.logic.act(this.game, seatId, action, { now, seed: this.nextSeed(), hostId: this.host?.id ?? null });
     if (!r.ok) return r.error;
     this.game = r.value.state; this.events = r.value.events as unknown[]; this.eventSeq++;
     return null;
@@ -391,7 +391,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   }
 
   /** The snapshot for one connection, or null if it has not said hello. */
-  snapshot(conn: string): Snapshot<Settings, View> | null {
+  snapshot(conn: string, now = Date.now()): Snapshot<Settings, View> | null {
     const me = this.byConn(conn);
     if (!me) return null;
     const plugins: Record<string, unknown> = {};
@@ -403,7 +403,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
       members: this._members.map((m) => this.info(m)),
       settings: this.settings, started: this.started, over: this.over,
       view: this.game ? this.logic.view(this.game, viewer) : null,
-      events: this.events, eventSeq: this.eventSeq, deadline: this.deadline, plugins,
+      events: this.events, eventSeq: this.eventSeq, deadline: this.deadline, serverNow: now, plugins,
     };
   }
 }

@@ -55,6 +55,8 @@ export interface Snapshot<Settings = unknown, View = unknown> {
   eventSeq: number;
   /** epoch ms when the room will act by itself next (timer), or null */
   deadline: number | null;
+  /** the server's clock when this snapshot was made: clients use it to count a deadline down in step (skew = serverNow - Date.now()) */
+  serverNow: number;
   /** per-plugin public data (e.g. the bots-away plugin's grace period) */
   plugins: Record<string, unknown>;
 }

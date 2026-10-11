@@ -9,7 +9,11 @@ export interface Seat {
   bot: boolean;
 }
 
-export interface ActContext { now: number; seed: number }
+export interface ActContext {
+  now: number; seed: number;
+  /** the seat id of the current host (null if nobody hosts), for actions only the host may take: skip, next round, abandon */
+  hostId: string | null;
+}
 
 export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
   /** short id, also the stats site name: 'my-game' */
@@ -32,6 +36,8 @@ export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
   /** What THIS viewer may see. `null` viewer = spectator / screen. Never include another player's secrets. */
   view(state: State, viewer: string | null): View;
   isOver(state: State): boolean;
+  /** true = the host may send `again` in the middle of a game to abandon it and return everyone to the lobby (no game-over screen, no finished-round count) */
+  abandonable?: boolean;
 
   /** Epoch ms of the next thing that happens without a player acting (a timer), or null. */
   deadline?(state: State): number | null;
