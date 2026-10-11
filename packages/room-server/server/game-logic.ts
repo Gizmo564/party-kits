@@ -25,6 +25,8 @@ export interface GameLogic<Settings, State, Action, View, Ev = unknown> {
   maxPlayers: number;
   /** how many avatar looks the web app has (0 = no avatars) */
   avatarLooks: number;
+  /** the colors this game offers its players (hex). Default: the kit palette (PLAYER_COLORS). */
+  palette?: readonly string[];
 
   defaultSettings(): Settings;
   /** Merge a host's patch into the current settings. Clamp numbers and drop unknown keys; return an error string for nonsense. */

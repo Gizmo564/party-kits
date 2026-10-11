@@ -338,6 +338,16 @@ describe('plugins', () => {
 });
 
 describe('logic hooks for richer games', () => {
+  it('a game palette decides the colors handed out and accepted', () => {
+    const palette = ['#111111', '#222222', '#333333'];
+    const r = new BaseRoom<ToySettings, ToyState, ToyAction, ToyView>('ABCD', { ...toyLogic, palette }, [], 7);
+    hello(r, 'c1', { name: 'Ann' }); hello(r, 'c2', { name: 'Bo' });
+    expect(snap(r, 'c1').members.map((m) => m.color)).toEqual(['#111111', '#222222']);
+    expect(r.handle('c1', { type: 'profile', color: '#333333' } as Msg)).toBeNull();
+    expect(snap(r, 'c1').members[0].color).toBe('#333333');
+    expect(r.handle('c1', { type: 'profile', color: '#ff9fb2' } as Msg)).toBeNull(); // kit color, not in this palette: ignored
+    expect(snap(r, 'c1').members[0].color).toBe('#333333');
+  });
   it('initialProfile seeds each new player (not watchers); view learns which device is looking; start gets the loaded context', () => {
     let seenExt: unknown;
     const logic = {

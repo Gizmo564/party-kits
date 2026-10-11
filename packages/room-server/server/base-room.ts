@@ -140,7 +140,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
     const taken = this._members.map((x) => x.color);
     const m: Member = {
       id: newMemberId(this._members.map((x) => x.id)), token: newToken(),
-      color: freeColor(taken, PLAYER_COLORS, this._members.length), avatar: this.freeAvatar(),
+      color: freeColor(taken, this.logic.palette ?? PLAYER_COLORS, this._members.length), avatar: this.freeAvatar(),
       role: 'player', host: false, screen: false, music: false, bot: false, away: false, data: {}, conns: new Set(), lastSeen: now,
       ...init,
     };
@@ -292,7 +292,7 @@ export class BaseRoom<Settings = any, State = any, Action = any, View = any, Ev 
   private profile(me: Member, msg: Extract<ClientMsg, { type: 'profile' }>): string | null {
     if (this.started) return 'the game has started';
     if (msg.name !== undefined) me.name = cleanText(msg.name, MAX_NAME) || me.name;
-    if (msg.color && (PLAYER_COLORS as readonly string[]).includes(msg.color) && !this._members.some((x) => x !== me && x.color === msg.color)) me.color = msg.color;
+    if (msg.color && (this.logic.palette ?? (PLAYER_COLORS as readonly string[])).includes(msg.color) && !this._members.some((x) => x !== me && x.color === msg.color)) me.color = msg.color;
     const n = this.logic.avatarLooks;
     if (msg.avatar !== undefined && Number.isInteger(msg.avatar) && msg.avatar >= 0 && msg.avatar < n) me.avatar = msg.avatar;
     if (msg.data && this.logic.cleanProfile) {
