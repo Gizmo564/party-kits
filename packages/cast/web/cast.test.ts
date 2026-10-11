@@ -55,6 +55,19 @@ describe('sender: createCaster', () => {
     };
     return { win, sent, ctx, setState: (s: string) => { castState = s; } };
   }
+  it('inside the iPhone player app, casting goes through the native bridge', async () => {
+    const posted: any[] = [];
+    const win: any = { webkit: { messageHandlers: { partyCast: { postMessage: (m: unknown) => posted.push(m) } } } };
+    const c = createCaster({ appId: '', game: 'track-record', getCode: () => 'ABCD', win });
+    expect(posted[0]).toMatchObject({ type: 'hello', game: 'track-record' });
+    expect(c.view().state).toBe('ready');
+    await c.start();
+    expect(posted.at(-1)).toMatchObject({ type: 'start', code: 'ABCD' });
+    win.__partyCast({ state: 'casting', device: 'Den TV' });
+    expect(c.view()).toEqual({ state: 'casting', device: 'Den TV' });
+    c.sync(); expect(posted.at(-1)).toMatchObject({ type: 'sync' });
+    c.stop(); expect(posted.at(-1)).toMatchObject({ type: 'stop' });
+  });
   it('stays unsupported without an App ID', async () => {
     const f = fakeWin();
     const c = createCaster({ appId: '', game: 'chameleon', getCode: () => 'LABC', win: f.win as never });

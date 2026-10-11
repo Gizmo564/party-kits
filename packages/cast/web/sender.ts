@@ -53,8 +53,31 @@ export interface Caster {
   sync(): void;
 }
 
+/** The iPhone app ("0801564.xyz player") hosts the game in a web view and does the casting natively; it exposes this bridge. */
+interface NativeBridge { webkit?: { messageHandlers?: { partyCast?: { postMessage(m: unknown): void } } }; __partyCast?: (s: { state?: string; device?: string }) => void }
+
+function createNativeCaster(opts: { game: string; getCode: () => string | null }, win: Window & NativeBridge): Caster {
+  const post = (m: Record<string, unknown>) => { try { win.webkit?.messageHandlers?.partyCast?.postMessage({ game: opts.game, code: opts.getCode(), ...m }); } catch { /* the app is gone */ } };
+  let v: CasterView = { state: 'ready', device: '' };
+  const subs = new Set<(v: CasterView) => void>();
+  win.__partyCast = (s) => {
+    const state: CastState = s.state === 'casting' ? 'casting' : s.state === 'connecting' ? 'connecting' : 'ready';
+    const n: CasterView = { state, device: state === 'casting' ? s.device ?? '' : '' };
+    if (n.state !== v.state || n.device !== v.device) { v = n; subs.forEach((f) => f(v)); }
+  };
+  post({ type: 'hello' });
+  return {
+    view: () => v,
+    subscribe(f) { subs.add(f); return () => { subs.delete(f); }; },
+    async start() { post({ type: 'start' }); },
+    stop() { post({ type: 'stop' }); },
+    sync() { if (opts.getCode()) post({ type: 'sync' }); },
+  };
+}
+
 export function createCaster(opts: { appId: string; game: string; getCode: () => string | null; win?: Window & Env }): Caster {
   const win = opts.win ?? (window as unknown as Window & Env);
+  if ((win as unknown as NativeBridge).webkit?.messageHandlers?.partyCast) return createNativeCaster({ game: opts.game, getCode: opts.getCode }, win as never);
   let v: CasterView = { state: opts.appId ? 'loading' : 'unsupported', device: '' };
   let ctx: CastContext | null = null;
   const subs = new Set<(v: CasterView) => void>();
