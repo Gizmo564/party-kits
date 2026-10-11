@@ -39,8 +39,9 @@ export function Online({ code, role, name, onLeave }: { code: string; role: 'pla
 
   const me = snap.members.find((m) => m.id === snap.you.id);
   const joinUrl = ROSTER.shareUrl(code);
-  // shown by the Cast button when casting fails: the link and a QR, so the TV's own browser (or a laptop on it) can open the game
-  const castFallback = <div className="center-col"><Qr text={joinUrl} size={140} /><small className="muted">{joinUrl.replace(/^https?:\/\//, '')}</small></div>;
+  // shown by the Cast button when casting fails: a link + QR to the TV view, so the TV's own browser (or a laptop on it) can open it
+  const tvUrl = `${location.origin}/?room=${code}&role=display`;
+  const castFallback = <div className="center-col"><Qr text={tvUrl} size={140} /><small className="muted">{tvUrl.replace(/^https?:\/\//, '')}</small></div>;
   const v = snap.view;
 
   // ---- lobby ----

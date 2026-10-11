@@ -27,3 +27,27 @@ Avatars on the TV lobby; no Leave/Close on the TV; Fullscreen only in a plain br
 1. Approve stages 1 to 4 as written, or only stage 1 for now?
 2. Should Chameleon get bots/away takeover (it has none today)? Recommended: no, keep behaviour.
 3. Existing rooms during a deploy: OK to let rooms in progress end when it deploys, as with earlier deploys?
+
+---
+## RESULT (2026-10-10, branch `kits-migration` in chameleon-xyz; NOT merged, NOT deployed)
+
+Approved by Tanner: stages 1-4. Done on the branch (4 commits):
+- **Server** is now the kit's `GameRoomDO` + a `chameleonLogic` (packages/server/src/logic.ts). `RoomDO` keeps its name and the migration tags are untouched. Old files (`room.ts`, `joincodes.ts`, `nap.ts`, `stats.ts`, `partyadmin.ts`) are gone; the kit provides them. 18 server tests ported (10 engine tests unchanged); `tsc`, tests, `vite build` and `wrangler deploy --dry-run` pass on the Mac.
+- **Web** uses the kit's `room-client` (socket, reconnect, tokens), `cast` (incl. failure fallback), `lobby-ui` (avatars, Fullscreen that hides on a cast TV). Screens still read a flat snapshot through an adapter (`net.ts`), so Chameleon's own look and CSS are unchanged.
+- **Checked in a real local Worker** (`wrangler dev`) with a TV + 6 phones in Chromium: lobby, a full round to the result, host starts round 2; no page errors; TV lobby has avatars, no Leave, no scroll at 1280x720.
+
+Kit additions made for this (all in room-server): `ActContext.hostId`, `Snapshot.serverNow`, `GameLogic.abandonable`.
+
+### Behaviour differences from the live game (all deliberate or unavoidable; check before deploying)
+1. TV lobby shows avatars; no Leave link on the TV; Fullscreen only in a plain browser (approved).
+2. Avatars are assigned automatically; Chameleon has no avatar picker (the kit's picker was not added).
+3. "End game for everyone" button removed (the kit has no room-close message). Host can still go back to the lobby.
+4. A player who closes the app now holds the vote up for about 25 s (then counts as abstaining); before, voting finished instantly on disconnect. Host can still tap Close voting now.
+5. Disconnected players at game start are seated (before: turned into watchers).
+6. The "finished round" usage count now counts one per finished GAME (all rounds), not per round.
+7. "Sit out" (unused by the UI) is gone.
+8. Saved player tokens use the kit's key names, so everyone rejoins as new after the deploy; rooms running at deploy time cannot be restored (the stored room format changed).
+9. Chameleon's TV "Show on TV" fallback link/QR opens `?room=CODE&role=display` (verified in the template only by typecheck/build, not on a real network).
+
+### Not verified
+Real Chromecast; the cast failure message on a real failing network; the live admin counts; phone layouts beyond the one screenshot; `tv-check` itself was not run against Chameleon (it targets the starter game).
