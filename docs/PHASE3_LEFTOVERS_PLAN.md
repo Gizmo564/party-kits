@@ -43,5 +43,14 @@ Status: DRAFT. Nothing below is built. Facts marked (unverified) have not been c
 ## Rollback
 Each game is on its own branch; previous Cloudflare deployment IDs recorded before deploy; kit 0.1.1 stays on npm.
 
+## Decisions from clarifying rounds
+- Differences are presented as ONE TABLE; Tanner answers per row (keep-game / use-kit / merge). Trivial cosmetic diffs may be listed without asking only if he says so (not decided; default: ask).
+- Kit changes use props/slots with sensible defaults.
+- Audio (Chameleon/Sandwich): same files and same triggers must remain; kit audio may be improved/reorganized as long as existing sounds still play. Track Record audio untouched.
+- Track Record lobby: shell only (layout, code panel, player list). No TV Stage/DisplayShell change for TR.
+- Cleanup in this phase: remove deps made unused by the migration (list first); strip Claude trailers from older commits in track-record-xyz, chameleon-xyz, sandwich-slam-xyz (done FIRST as a separate step, local backup branches kept; deleting backups needs asking again); delete local `backup-before-strip` in party-kits (confirm once more before running).
+- Verification: screenshots + headless checks; Tanner play-tests after deploy.
+- Deploy: all three immediately once checks pass (after plan approval); previous deployment IDs recorded for rollback.
+
 ## Open items for Tanner
-- Confirm plan, then say go. Anything unverified above will be checked in Stage 1.
+- Final approval of this plan ("go"). Anything unverified above will be checked in Stage 1.
