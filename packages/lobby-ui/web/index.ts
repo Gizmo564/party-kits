@@ -3,6 +3,7 @@ export * from './collapse';
 export * from './controls';
 export * from './fit';
 export * from './FullscreenButton';
+export * from './layout-parts';
 export * from './lobby-parts';
 export * from './Qr';
 export * from './toasts';

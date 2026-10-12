@@ -68,4 +68,15 @@ describe('LobbyScreen layout', () => {
     expect(top.textContent).toContain('Show on wired TV');
     expect(screen.queryByTestId('stickybar')).toBeNull();
   });
+  it('phone: Leave in the header, the device grid sits right under the code panel', () => {
+    render(<LobbyScreen {...base} snap={snap({}, [host, guest])} send={vi.fn()} devices={<><button>Sound</button><button>Show on TV</button></>} />);
+    expect(screen.getByTestId('lobby-header').textContent).toContain('Leave');
+    const code = screen.getByTestId('room-code').closest('section')!;
+    expect(code.nextElementSibling).toBe(screen.getByTestId('devices'));
+  });
+  it('a TV has no Leave button', () => {
+    const tv = mem({ id: 't', name: 'TV', screen: true });
+    render(<LobbyScreen {...base} snap={snap({ id: 't', host: false }, [host, tv])} send={vi.fn()} />);
+    expect(screen.queryByText('Leave')).toBeNull();
+  });
 });

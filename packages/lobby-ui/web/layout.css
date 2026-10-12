@@ -30,3 +30,30 @@
   background: var(--surface, #fff); border-top: var(--border, 3px) solid var(--line, #222);
 }
 .stickybar .muted { text-align: center; margin: 0; }
+
+/* ---- shared lobby arrangement (layout-parts.tsx) ---- */
+.lobbyhead { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.lobbyhead > :first-child { justify-self: start; }
+.lobbyhead h1 { margin: 0; text-align: center; }
+
+/* phone buttons: equal-width, two columns; a lone last button (or one that opens a panel, like the jukebox) takes the whole row */
+.devgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.devgrid > * { min-width: 0; }
+.devgrid .btn, .devgrid button { width: 100%; justify-content: center; text-align: center; }
+.devgrid > .muted, .devgrid > small, .devgrid > p, .devgrid > :has(.jukebox-panel) { grid-column: 1 / -1; }
+.devgrid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* TV: slim top bar, code + QR pinned top left, players on the right; fills the screen, nothing to tap but the top bar */
+.page.tvl { max-width: none; width: 100%; min-height: 100vh; min-height: 100dvh; height: auto; overflow: visible; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 16px); padding: clamp(10px, 2vh, 20px) clamp(16px, 3vw, 40px) 20px; box-sizing: border-box; }
+.tvl-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tvl-top h1 { margin: 0; flex: 1; font-size: clamp(22px, 3.4vh, 34px); }
+.tvl-btns { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.tvl-body { flex: 1; display: grid; grid-template-columns: minmax(300px, 36%) minmax(0, 1fr); gap: clamp(12px, 2vw, 28px); align-items: start; }
+.tvl-left { display: flex; flex-direction: column; gap: clamp(6px, 1.4vh, 14px); min-width: 0; }
+.tvl-right { min-width: 0; }
+.tvl .bigcode { font-size: clamp(56px, 9vw, 150px); }
+.tvl .qr { width: clamp(180px, 34vh, 380px) !important; height: clamp(180px, 34vh, 380px) !important; }
+.tvl .tvnote { margin: 0; }
+.tvl .tvplayers { grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 24vw, 340px), 1fr)); }
+.tvl .tvplayers .player-row { font-size: clamp(20px, 3vh, 34px); }
+@media (max-aspect-ratio: 1/1) { .tvl-body { grid-template-columns: 1fr; } }

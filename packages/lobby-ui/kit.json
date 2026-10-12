@@ -3,7 +3,8 @@
   "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TeamPicker, TeamChip, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
   "tests": [
     "web/lobby-ui.test.tsx",
-    "web/collapse.test.tsx"
+    "web/collapse.test.tsx",
+    "web/layout-parts.test.tsx"
   ],
   "requires": [
     "themes (base.css classes)",

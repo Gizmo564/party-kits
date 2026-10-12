@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { PLAYER_COLORS } from '@gizmo564/engine-core/engine';
 import type { ClientMsg, Snapshot } from '@gizmo564/room-server/server/protocol';
-import { CodePanel, FullscreenButton, PlayerList, ProfileEditor, StickyBar, LOOK_COUNT } from '@gizmo564/lobby-ui/web';
+import { CodePanel, DeviceGrid, FullscreenButton, LobbyHeader, PlayerList, ProfileEditor, StickyBar, TvLobbyFrame, LOOK_COUNT } from '@gizmo564/lobby-ui/web';
 import { SettingsForm, type SectionDef } from './SettingsForm';
 import { MusicWhere } from './HostPanel';
 
@@ -60,32 +60,25 @@ export function LobbyScreen<S extends Record<string, any>>(p: LobbyScreenProps<S
   // ---- a TV: fixed to the window, never scrolls, nothing to tap (everything else is on the host's phone) ----
   if (tv) {
     return (
-      <div className="page setup tvlobby" data-testid="tv-lobby">
-        <div className="row between">
-          <h1 className="h-lg">Lobby</h1>
-          <div className="row">{p.devices}<FullscreenButton /></div>
-        </div>
-        <div className="tvleft">
+      <TvLobbyFrame
+        buttons={<>{p.devices}<FullscreenButton /></>}
+        left={<>
           <CodePanel code={snap.code} joinUrl={p.joinUrl} showQr qrSize={220} tv />
           <p className="muted center-text tvnote">{hostMember ? `${hostMember.name} starts the game from their phone.` : 'Waiting for the first phone to join. Players join at play.0801564.xyz.'}</p>
           {p.children}
-        </div>
-        <PlayerList members={snap.members} meId={me.id} max={p.maxPlayers} extra={p.playerExtra} tv />
-      </div>
+        </>}
+        right={<PlayerList members={snap.members} meId={me.id} max={p.maxPlayers} extra={p.playerExtra} tv />}
+      />
     );
   }
 
   return (
     <div className="page setup">
-      <div className="row between">
-        <button className="btn small" onClick={p.onLeave}>Leave</button>
-        <h1 className="h-lg">Lobby</h1>
-        <span />
-      </div>
+      <LobbyHeader onLeave={p.onLeave} />
 
       <CodePanel code={snap.code} joinUrl={p.joinUrl} showQr={!hasHost} qrSize={160} />
 
-
+      {p.devices ? <DeviceGrid>{p.devices}</DeviceGrid> : null}
       {!hasHost ? (
         <section className="panel">
           <p className="muted">This room was opened on a host display, so nobody is running it yet.</p>
@@ -110,7 +103,6 @@ export function LobbyScreen<S extends Record<string, any>>(p: LobbyScreenProps<S
         </ProfileEditor>
       ) : null}
 
-      {p.devices ? <div className="row" data-testid="devices">{p.devices}</div> : null}
       {p.children}
 
       {host ? <MusicWhere snap={snap} send={send} /> : null}
