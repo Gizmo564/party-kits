@@ -45,9 +45,10 @@
 
 /* TV: slim top bar, code + QR pinned top left, players on the right; fills the screen, nothing to tap but the top bar */
 .page.tvl { max-width: none; width: 100%; min-height: 100vh; min-height: 100dvh; height: auto; overflow: visible; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 16px); padding: clamp(10px, 2vh, 20px) clamp(16px, 3vw, 40px) 20px; box-sizing: border-box; }
-.tvl-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tvl-top { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
 .tvl-top h1 { margin: 0; flex: 1; font-size: clamp(22px, 3.4vh, 34px); }
 .tvl-btns { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.tvl-btns > small, .tvl-btns > .muted, .tvl-btns > p { flex: 0 0 100%; order: 10; margin: 0; text-align: right; }
 .tvl-body { flex: 1; display: grid; grid-template-columns: minmax(300px, 36%) minmax(0, 1fr); gap: clamp(12px, 2vw, 28px); align-items: start; }
 .tvl-left { container-type: inline-size; display: flex; flex-direction: column; gap: clamp(6px, 1.4vh, 14px); min-width: 0; }
 .tvl-right { min-width: 0; }
