@@ -51,9 +51,9 @@
 .tvl-body { flex: 1; display: grid; grid-template-columns: minmax(300px, 36%) minmax(0, 1fr); gap: clamp(12px, 2vw, 28px); align-items: start; }
 .tvl-left { display: flex; flex-direction: column; gap: clamp(6px, 1.4vh, 14px); min-width: 0; }
 .tvl-right { min-width: 0; }
-.tvl .bigcode { font-size: clamp(56px, 9vw, 150px); }
-.tvl .qr { width: clamp(180px, 34vh, 380px) !important; height: clamp(180px, 34vh, 380px) !important; }
-.tvl .tvnote { margin: 0; }
-.tvl .tvplayers { grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 24vw, 340px), 1fr)); }
-.tvl .tvplayers .player-row { font-size: clamp(20px, 3vh, 34px); }
+.page.tvl .bigcode { font-size: clamp(56px, 9vw, 150px); }
+.page.tvl .qr { width: clamp(180px, 34vh, 380px) !important; height: clamp(180px, 34vh, 380px) !important; }
+.page.tvl .tvnote { margin: 0; }
+.page.tvl .tvplayers { grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 24vw, 340px), 1fr)); }
+.page.tvl .tvplayers .player-row { font-size: clamp(20px, 3vh, 34px); }
 @media (max-aspect-ratio: 1/1) { .tvl-body { grid-template-columns: 1fr; } }

@@ -1,6 +1,6 @@
 {
   "name": "@gizmo564/lobby-ui",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Small UI parts every game reuses: 21 avatars, QR, fullscreen, Modal, Stepper, Toggle, Choice, ColorPicker, TeamPicker, TeamChip, TurnTimer, toasts, CodePanel, PlayerList (host controls, bots), ProfileEditor, fitGrid.",
   "type": "module",
   "exports": {
