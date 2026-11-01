@@ -106,6 +106,12 @@ describe('<WiredTvButton>', () => {
     fireEvent.click(screen.getByTestId('other-device-btn'));
     expect(screen.getByTestId('wired-link').textContent).toMatch(/room=AB12&role=display&wired=1/);
   });
+  it('is hidden in the 0801564 Games TV app', () => {
+    touch(false);
+    vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 Chrome/120 0801564TV');
+    const { container } = render(<WiredTvButton code="AB12" />);
+    expect(container.innerHTML).toBe('');
+  });
   it('is hidden on the Chromecast and inside a wired window', () => {
     touch(false);
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 CrKey/1.56 Safari');

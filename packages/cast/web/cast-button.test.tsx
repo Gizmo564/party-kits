@@ -4,9 +4,10 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { isCastReceiver, onCastScreen } from './receiver';
 
 let failed = false;
+let unsupported = false;
 vi.mock('./sender', async (orig) => {
   const real = await orig<typeof import('./sender')>();
-  const caster = { view: () => ({ state: failed ? 'failed' : 'ready', device: '' }), subscribe: () => () => {}, start: async () => {}, stop: () => {}, sync: () => {} };
+  const caster = { view: () => ({ state: unsupported ? 'unsupported' : failed ? 'failed' : 'ready', device: '' }), subscribe: () => () => {}, start: async () => {}, stop: () => {}, sync: () => {} };
   return { ...real, getCaster: () => ({ caster, setCode: () => {} }) };
 });
 import { CastButton } from './CastButton';
@@ -37,6 +38,21 @@ describe('CastButton', () => {
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 CrKey/1.56 Chrome/96');
     render(<CastButton game="g" code="ABCD" />);
     expect(screen.queryByTestId('cast-btn')).toBeNull();
+  });
+  it('hides itself in the 0801564 Games TV app', () => {
+    vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 Chrome/120 0801564TV');
+    render(<CastButton game="g" code="ABCD" />);
+    expect(screen.queryByTestId('cast-btn')).toBeNull();
+    expect(screen.queryByTestId('cast-btn-unavailable')).toBeNull();
+  });
+  it('where Cast cannot work, shows a greyed-out button with the reason on hover and no note text', () => {
+    unsupported = true;
+    render(<CastButton game="g" code="ABCD" />);
+    const b = screen.getByTestId('cast-btn-unavailable');
+    expect(b.getAttribute('aria-disabled')).toBe('true');
+    expect(b.getAttribute('title')).toMatch(/AirPlay/);
+    expect(screen.queryByTestId('cast-note')).toBeNull();
+    unsupported = false;
   });
   it('after a failed cast shows the message and the fallback (TV link + QR)', () => {
     failed = true;
