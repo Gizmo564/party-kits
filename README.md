@@ -1,5 +1,7 @@
 # party-kits
 
+Part of [0801564.xyz](https://0801564.xyz).
+
 The reusable pieces of the 0801564.xyz party games, as npm packages under the `@gizmo564` scope, plus `create-game`, the scaffold for a new game.
 
 | Package | What it is |
