@@ -45,6 +45,16 @@ describe('CastButton', () => {
     expect(screen.queryByTestId('cast-btn')).toBeNull();
     expect(screen.queryByTestId('cast-btn-unavailable')).toBeNull();
   });
+  it('hides itself on a Samsung (Tizen) TV, but not on a Samsung phone', () => {
+    const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5) AppleWebKit/537.36 TV Safari/537.36');
+    const { unmount } = render(<CastButton game="g" code="ABCD" />);
+    expect(screen.queryByTestId('cast-btn')).toBeNull();
+    expect(screen.queryByTestId('cast-btn-unavailable')).toBeNull();
+    unmount();
+    ua.mockReturnValue('Mozilla/5.0 (Linux; Android 14; SM-S918B) Chrome/120 Mobile Safari/537.36');
+    render(<CastButton game="g" code="ABCD" />);
+    expect(screen.queryByTestId('cast-btn') ?? screen.queryByTestId('cast-btn-unavailable')).not.toBeNull();
+  });
   it('where Cast cannot work, shows a greyed-out button with the reason on hover and no note text', () => {
     unsupported = true;
     render(<CastButton game="g" code="ABCD" />);

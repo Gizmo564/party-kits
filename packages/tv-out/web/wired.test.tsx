@@ -112,6 +112,12 @@ describe('<WiredTvButton>', () => {
     const { container } = render(<WiredTvButton code="AB12" />);
     expect(container.innerHTML).toBe('');
   });
+  it('is hidden on a Samsung (Tizen) TV', () => {
+    touch(false);
+    vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5) AppleWebKit/537.36 TV Safari/537.36');
+    const { container } = render(<WiredTvButton code="AB12" />);
+    expect(container.innerHTML).toBe('');
+  });
   it('is hidden on the Chromecast and inside a wired window', () => {
     touch(false);
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 CrKey/1.56 Safari');

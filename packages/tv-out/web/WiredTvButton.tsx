@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { isWiredWindow, openWiredWindow, wiredUrl } from './wired';
 
-const onChromecast = () => typeof navigator !== 'undefined' && /CrKey|0801564TV/.test(navigator.userAgent || ''); // CrKey = Chromecast, 0801564TV = the TV app
+const onChromecast = () => typeof navigator !== 'undefined' && /CrKey|0801564TV|SMART-TV.*Tizen/.test(navigator.userAgent || ''); // CrKey = Chromecast, 0801564TV = the Android TV app, SMART-TV + Tizen = a Samsung TV
 const inFrame = () => typeof window !== 'undefined' && window.self !== window.top;
 const isTouch = () => typeof window !== 'undefined' && !!window.matchMedia?.('(hover: none) and (pointer: coarse)').matches;
 

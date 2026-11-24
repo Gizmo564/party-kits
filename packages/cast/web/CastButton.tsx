@@ -9,8 +9,8 @@ import { onCastScreen } from './receiver';
  * device picker says when no TV is found. Elsewhere (iPhone, Safari, Firefox) a greyed-out button shows the reason (AirPlay / Join as Display) on hover.
  * In the 0801564 Games TV app it renders nothing.
  */
-/** The 0801564 Games TV app adds "0801564TV" to its user agent. That screen is the TV itself, so it never shows Cast or AirPlay controls. */
-const inTvApp = () => typeof navigator !== 'undefined' && /0801564TV/.test(navigator.userAgent || '');
+/** The 0801564 Games TV apps are the TV itself, so they never show Cast or AirPlay controls: the Android TV app adds "0801564TV" to its user agent, and a Samsung (Tizen) TV's own user agent contains "SMART-TV" and "Tizen". Phones, tablets and computers still get them. */
+const inTvApp = () => typeof navigator !== 'undefined' && /0801564TV|SMART-TV.*Tizen/.test(navigator.userAgent || '');
 
 export function CastButton({ game, code, className = '', noteClassName = '', fallback }: { game: string; code: string; className?: string; noteClassName?: string; /** shown when casting fails or no TV is found: the TV link + QR, so the TV's own browser can open it */ fallback?: ReactNode }) {
   const { caster, setCode } = useMemo(() => getCaster(game), [game]);
